@@ -1,0 +1,90 @@
+; ************************************************************************************************
+;       Programme: Remise en ordre de CHAÎNES de caractères.     version PEP813 sous Linux
+;
+;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
+;        ASCII croissant les chaînes des caractères entrées.
+;
+;       auteur:         Charles Morin
+;       code permanent: MORC28019804
+;       courriel:       morin.charles.5@courrier.uqam.ca
+;       date:           hiver 2019
+;       cours:          INF2171
+; ************************************************************************************************
+;
+
+;                            ; // Lit la liste (à l'envers)
+         LDA     5,i        
+         STA     cpt,d       
+loop_in: CPA     0,i         
+         BRLE    setCpt      ; for(cpt=5; cpt>0; cpt--) {
+         LDA     mLength,i   
+         CALL    new         ;   X = new Maillon(); #mVal #mNext
+         CHARI   mVal,x      ;   X.val = getInt();
+         LDBYTEA mVal,x
+         LDA     head,d      
+         STA     mNext,x     ;   X.next = head;
+         STX     head,d      ;   head = X;
+         LDA     cpt,d       
+         SUBA    1,i         
+         STA     cpt,d       
+         BR      loop_in     ; } // fin for
+
+setCpt:  LDA     5,i         
+         STA     cpt,d       
+         STX     minAddr,d    
+         LDBYTEA mVal,x     
+         STA     minVal,d
+findMin: LDX     head,d      
+         LDBYTEA mVal,x      
+loop_out:CPX     0,i         
+         BREQ    out         ; for (X=head; X!=null; X=X.next) {
+         LDBYTEA mVal,x
+         CPA     minVal,d
+         BRLE    setMin
+         LDX     mNext,x     
+         BR      loop_out    ; } // fin for
+
+setMin:  STA     minVal,d
+         STX     minAddr,d
+         LDX     mNext,x     
+         BR      loop_out
+
+out:     DECO    minVal,d 
+         LDBYTEA 'z',i
+         LDX     minAddr,d
+         STA     mVal,x
+         CHARO   ' ',i
+         LDA     cpt,d
+         SUBA    1,i
+         STA     cpt,d
+         CPA     0,i
+         BRGT    findMin
+         BR      fin
+         
+fin:     STOP                
+
+head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
+minVal:  .BLOCK  2
+minAddr: .BLOCK  2           
+cpt:     .BLOCK  2           ; #2d compteur de boucle
+
+;
+;******* Structure de liste d'entiers
+; Une liste est constituée d'une chaîne de maillons.
+; Chaque maillon contient une valeur et l'adresse du maillon suivant
+; La fin de la liste est marquée arbitrairement par l'adresse 0
+mVal:    .EQUATE 0           ; #1h valeur de l'élément dans le maillon
+mNext:   .EQUATE 1           ; #2h maillon suivant (null (aka 0) pour fin de liste)
+mLength: .EQUATE 3           ; taille d'un maillon en octets
+;
+;
+;******* operator new
+;        Precondition: A contains number of bytes
+;        Postcondition: X contains pointer to bytes
+new:     LDX     hpPtr,d     ;returned pointer
+         ADDA    hpPtr,d     ;allocate from heap
+         STA     hpPtr,d     ;update hpPtr
+         RET0                
+hpPtr:   .ADDRSS heap        ;address of next free byte
+heap:    .BLOCK  2           ;first byte in the heap
+         .END                  

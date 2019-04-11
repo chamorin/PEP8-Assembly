@@ -1,0 +1,58 @@
+Bienvenu dans le programme d'analyse de lots gagnants!
+Le programme va demander l'entré d'un maximum de 7 lots
+allant de 0.0 à 100.0. Ensuite, lorsque l'utilisateur appuie ENTER,
+le programme affiche le lot maximum, la moyenne des lots et l'écart-type.
+Finalement, lorsque l'utilisateur entre seulement ENTER,
+le programme cesse de demander des lots et affiche le nombre de périodes de tirages,
+le nombre total de tirages et la moyenne des moyennes des lots gagnants.
+Le programme affiche donc son message de fin et s'arrête.
+
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+4 5 6 0
+Nombre de tirages: 4
+Lot maximum: 6.0 Moyenne des lots: 3.8 Ecart: 2.2
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+4.2 5.3 6 .0
+Nombre de tirages: 4
+Lot maximum: 6.0 Moyenne des lots: 3.9 Ecart: 2.3
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+  00004.0 5.0 6.  
+Nombre de tirages: 3
+Lot maximum: 6.0 Moyenne des lots: 5.0 Ecart: 0.8
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+44.4 55.5 0070
+Nombre de tirages: 3
+Lot maximum: 70.0 Moyenne des lots: 56.6 Ecart: nd
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+100.0 100 100 100 100 100 100
+Nombre de tirages: 7
+Lot maximum: 100.0 Moyenne des lots: 100.0 Ecart: 0.0
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+1..1
+Entrée invalide
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+222 .22
+Entrée invalide
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+. 3 3
+Entrée invalide
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+4 4 4 4 5 6 7 8
+Entrée invalide
+-------------------------------------------------------------------------
+Entrez les montants des lots gagnants:
+
+Nombre de périodes de tirages: 5
+Nombre total de tirages: 21
+Moyenne des moyennes des lots gagnants: 33.9
+
+Merci, à la prochaine!

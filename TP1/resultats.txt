@@ -1,0 +1,29 @@
+Bienvenu dans le programme de nom de famille!
+Le programme va additionner chacune des positions
+des lettres dans l'alphabet contenue dans le nom de famille
+pour ensuite appliquer un modulo 10 au résultat.
+Ainsi, vous pourrez donc voir le pointage du nom entré.
+Pour quitter le programme entrez ENTER.
+Veuillez entrer un nom de famille: amou
+
+Le code de validation est 7.
+-------------------------------------------------------------------------
+Veuillez entrer un nom de famille: Haji Baba Sufi
+
+Le code de validation est 1.
+-------------------------------------------------------------------------
+Veuillez entrer un nom de famille: Adam - Le Rouet
+
+Le code de validation est 0.
+-------------------------------------------------------------------------
+Veuillez entrer un nom de famille:   Ford D'ARGENSON  
+
+Le code de validation est 4.
+-------------------------------------------------------------------------
+Veuillez entrer un nom de famille: D e l'Eglise-St-O'Reill y
+
+Le code de validation est 1.
+-------------------------------------------------------------------------
+Veuillez entrer un nom de famille: 
+
+Merci, à la prochaine!
