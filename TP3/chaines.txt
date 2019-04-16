@@ -12,30 +12,75 @@
 ; ************************************************************************************************
 ;
 
+;************************************************************************************************
+;
+;                                     T O  D O
+;                                 ================
+;
+;                            1.  Quand ca commence par un espace
+;                            2.  Quand ca fini par un nombre impair d'espace
+;
+;************************************************************************************************
+
+
 ;                            ; // Lit la liste (à l'envers)
-         LDA     5,i        
-         STA     cpt,d       
-loop_in: CPA     0,i         
-         BRLE    setCpt      ; for(cpt=5; cpt>0; cpt--) {
+
          LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
+         CHARO   'n',i
+         LDA     0,i
          CHARI   mVal,x      ;   X.val = getInt();
          LDBYTEA mVal,x
+         CPA     '\n',i
+         BREQ    findMin
+         STA     avCaract,d
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
          LDA     cpt,d       
-         SUBA    1,i         
-         STA     cpt,d       
+         ADDA    1,i         
+         STA     cpt,d      
+         ADDX    1,i 
+
+loop_in: LDA     avCaract,d
+         CPA     ' ',i
+         BREQ    avEspace
+         LDA     mLength,i   
+         CHARI   mVal,d
+         CPA     '\n',i
+         BREQ    findMin
+addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
+         STBYTEA mVal,x
+         STA     avCaract,d
+         ADDX    1,i
+continu: LDA     head,d      
+         STA     mNext,x     ;   X.next = head;
+         STX     head,d      ;   head = X;
          BR      loop_in     ; } // fin for
 
-setCpt:  LDA     5,i         
+avEspace:CHARI   mVal,d
+         LDBYTEA mVal,d
+         CPA     '\n',i
+         BREQ    findMin
+         CPA     ' ',i
+         BREQ    addTo       ; ajoute dans le maillon courrant 
+         LDA     mLength,i   
+         CHARO   'n',i
+         CALL    new         ;   X = new Maillon(); #mVal #mNext
+         LDA     cpt,d       
+         ADDA    1,i         
          STA     cpt,d       
+         LDA     0,i
+         LDBYTEA mVal,d
+         STA     avCaract,d
+         LDX     0,i
+         STBYTEA mVal,x
+         BR      continu 
+    
+findMin: LDX     head,d      
          STX     minAddr,d    
          LDBYTEA mVal,x     
          STA     minVal,d
-findMin: LDX     head,d      
-         LDBYTEA mVal,x      
 loop_out:CPX     0,i         
          BREQ    out         ; for (X=head; X!=null; X=X.next) {
          LDBYTEA mVal,x
@@ -50,9 +95,9 @@ setMin:  STA     minVal,d
          BR      loop_out
 
 out:     DECO    minVal,d 
-         LDBYTEA 'z',i
          LDX     minAddr,d
-         STA     mVal,x
+         LDBYTEA 0xFF,i
+         STBYTEA mVal,x
          CHARO   ' ',i
          LDA     cpt,d
          SUBA    1,i
@@ -60,22 +105,27 @@ out:     DECO    minVal,d
          CPA     0,i
          BRGT    findMin
          BR      fin
+
+invalide:STRO    erreur,d 
+         BR      fin
          
 fin:     STOP                
 
 head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  2
 minAddr: .BLOCK  2           
+nbCaract:.BLOCK  2
 cpt:     .BLOCK  2           ; #2d compteur de boucle
+avCaract:.BLOCK  2
 
 ;
 ;******* Structure de liste d'entiers
 ; Une liste est constituée d'une chaîne de maillons.
 ; Chaque maillon contient une valeur et l'adresse du maillon suivant
 ; La fin de la liste est marquée arbitrairement par l'adresse 0
-mVal:    .EQUATE 0           ; #1h valeur de l'élément dans le maillon
-mNext:   .EQUATE 1           ; #2h maillon suivant (null (aka 0) pour fin de liste)
-mLength: .EQUATE 3           ; taille d'un maillon en octets
+mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
+mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
+mLength: .EQUATE 28          ; taille d'un maillon en octets
 ;
 ;
 ;******* operator new
@@ -87,4 +137,20 @@ new:     LDX     hpPtr,d     ;returned pointer
          RET0                
 hpPtr:   .ADDRSS heap        ;address of next free byte
 heap:    .BLOCK  2           ;first byte in the heap
+
+;
+; Temp
+;
+tempA:   .BLOCK  2
+
+;
+; Messages
+;
+bienvenu:.ASCII  "Bienvenu dans le programme de chaine\x00"
+entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
+aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
+tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
+erreur:  .ASCII  "Entrée invalide\n\x00"
+deborde: .ASCII  "Erreur débordement\n\x00"
+
          .END                  
