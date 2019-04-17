@@ -17,21 +17,22 @@
 ;                                     T O  D O
 ;                                 ================
 ;
-;                            1.  Quand ca commence par un espace
-;                            2.  Quand ca fini par un nombre impair d'espace
+;                            1.   Problème avec le mLength
+;                            2.   Quand ca commence par un espace
+;                            3.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
 
 ;                            ; // Lit la liste (à l'envers)
 
-         LDA     mLength,i   
+begin:   LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
          LDA     0,i
          CHARI   mVal,x      ;   X.val = getInt();
          LDBYTEA mVal,x
          CPA     '\n',i
-         BREQ    findMin
+         BREQ    end
          STA     avCaract,d
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
@@ -39,10 +40,14 @@
          LDA     cpt,d       
          ADDA    1,i         
          STA     cpt,d      
+         STA     nbCaract,d
 
 loop_in: LDA     avCaract,d
          CPA     ' ',i
          BREQ    avEspace
+         LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
          LDA     mLength,i   
          CHARI   mVal,d
          LDBYTEA mVal,d 
@@ -53,7 +58,10 @@ loop_in: LDA     avCaract,d
          STA     avCaract,d
          BR      loop_in     ; } // fin for
 
-avEspace:CHARI   mVal,d
+avEspace:LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
+         CHARI   mVal,d
          LDBYTEA mVal,d
          CPA     '\n',i
          BREQ    findMin
@@ -83,7 +91,7 @@ addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present
          BR      loop_in     ; } // fin for
     
 findMin: LDA     nbCaract,d
-         CPA     26,i
+         CPA     28,i
          BRGE    setInval 
 continu: LDX     head,d      
          STX     minAddr,d    
@@ -102,28 +110,39 @@ setMin:  STA     minVal,d
          LDX     mNext,x     
          BR      loop_out
 
-out:     LDA     isInval,d
+out:     LDA     cpt,d
+         SUBA    1,i
+         STA     cpt,d
+         LDA     isInval,d
+if:      CPA     1,i
+         BREQ    and
+         BR      else
+and:     LDA     cpt,d
+         CPA     0,i
+         BREQ    invalide
+else:    LDA     isInval,d
          CPA     1,i
-         BREQ    findMin
+         BREQ    continu
          DECO    minVal,d 
          LDX     minAddr,d
          LDBYTEA 0xFF,i
          STBYTEA mVal,x
+         LDA     cpt,d
+         CPA     0,i
+         BREQ    continu2
          CHARO   ' ',i
          CHARO   '-',i
          CHARO   '>',i
          CHARO   ' ',i
-         LDA     cpt,d
-         SUBA    1,i
-         STA     cpt,d
+continu2:LDA     cpt,d
          CPA     0,i
          BRGT    findMin
-         LDA     isInval,d
-         CPA     1,i
-         BREQ    invalide
          LDA     0,i
          LDX     0,i
-         BR      fin
+         STA     isInval,d
+         STA     nbCaract,d
+         STA     cpt,d
+         BR      begin
 
 setInval:LDA     1,i
          STA     isInval,d
@@ -132,15 +151,25 @@ setInval:LDA     1,i
 invalide:STRO    erreur,d 
          LDA     0,i
          LDX     0,i
-         BR      loop_in
+         STA     isInval,d
+         STA     nbCaract,d
+         STA     cpt,d
+         BR      begin
          
-fin:     STOP                
+end:     STOP                
 
+;
+; Variables
+;
 head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  2
 minAddr: .BLOCK  2           
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
+isInval: .BLOCK  2           ; #2d
+nbCaract:.BLOCK  2           ; #2d
+tempA:   .BLOCK  2
+isEnd:   .BLOCK  2
 
 ;
 ;******* Structure de liste d'entiers
@@ -149,7 +178,7 @@ avCaract:.BLOCK  2
 ; La fin de la liste est marquée arbitrairement par l'adresse 0
 mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
-mLength: .EQUATE 28          ; taille d'un maillon en octets
+mLength: .EQUATE 28         ; taille d'un maillon en octets
 ;
 ;
 ;******* operator new
@@ -161,14 +190,6 @@ new:     LDX     hpPtr,d     ;returned pointer
          RET0                
 hpPtr:   .ADDRSS heap        ;address of next free byte
 heap:    .BLOCK  2           ;first byte in the heap
-
-;
-; Variables
-;
-tempA:   .BLOCK  2
-isInval: .BLOCK  2
-isEnd:   .BLOCK  2
-nbCaract:.BLOCK  2 
 
 ;
 ; Messages
