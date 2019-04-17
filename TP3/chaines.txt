@@ -1,8 +1,8 @@
 ; ************************************************************************************************
-;       Programme: Remise en ordre de CHAÎNES de caractères.     version PEP813 sous Linux
+;       Programme: Remise en ordre de CHAÃŽNES de caractÃ¨res.     version PEP813 sous Linux
 ;
-;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
-;        ASCII croissant les chaînes des caractères entrées.
+;        Suite Ã  une demande Ã  l'utilisateur,le programme affiche en ordre 
+;        ASCII croissant les chaÃ®nes des caractÃ¨res entrÃ©es.
 ;
 ;       auteur:         Charles Morin
 ;       code permanent: MORC28019804
@@ -23,11 +23,10 @@
 ;************************************************************************************************
 
 
-;                            ; // Lit la liste (à l'envers)
+;                            ; // Lit la liste (Ã  l'envers)
 
          LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
-         CHARO   'n',i
          LDA     0,i
          CHARI   mVal,x      ;   X.val = getInt();
          LDBYTEA mVal,x
@@ -40,22 +39,18 @@
          LDA     cpt,d       
          ADDA    1,i         
          STA     cpt,d      
-         ADDX    1,i 
 
 loop_in: LDA     avCaract,d
          CPA     ' ',i
          BREQ    avEspace
          LDA     mLength,i   
          CHARI   mVal,d
+         LDBYTEA mVal,d 
          CPA     '\n',i
-         BREQ    findMin
-addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
+         BREQ    findMin      
+         ADDX    1,i
          STBYTEA mVal,x
          STA     avCaract,d
-         ADDX    1,i
-continu: LDA     head,d      
-         STA     mNext,x     ;   X.next = head;
-         STX     head,d      ;   head = X;
          BR      loop_in     ; } // fin for
 
 avEspace:CHARI   mVal,d
@@ -65,7 +60,6 @@ avEspace:CHARI   mVal,d
          CPA     ' ',i
          BREQ    addTo       ; ajoute dans le maillon courrant 
          LDA     mLength,i   
-         CHARO   'n',i
          CALL    new         ;   X = new Maillon(); #mVal #mNext
          LDA     cpt,d       
          ADDA    1,i         
@@ -73,11 +67,25 @@ avEspace:CHARI   mVal,d
          LDA     0,i
          LDBYTEA mVal,d
          STA     avCaract,d
-         LDX     0,i
          STBYTEA mVal,x
-         BR      continu 
+         LDA     head,d      
+         STA     mNext,x     ;   X.next = head;
+         STX     head,d      ;   head = X;
+         BR      loop_in 
+
+addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
+         STBYTEA mVal,x
+         STA     avCaract,d
+         ADDX    1,i
+         LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
+         BR      loop_in     ; } // fin for
     
-findMin: LDX     head,d      
+findMin: LDA     nbCaract,d
+         CPA     26,i
+         BRGE    setInval 
+continu: LDX     head,d      
          STX     minAddr,d    
          LDBYTEA mVal,x     
          STA     minVal,d
@@ -94,36 +102,52 @@ setMin:  STA     minVal,d
          LDX     mNext,x     
          BR      loop_out
 
-out:     DECO    minVal,d 
+out:     LDA     isInval,d
+         CPA     1,i
+         BREQ    findMin
+         DECO    minVal,d 
          LDX     minAddr,d
          LDBYTEA 0xFF,i
          STBYTEA mVal,x
+         CHARO   ' ',i
+         CHARO   '-',i
+         CHARO   '>',i
          CHARO   ' ',i
          LDA     cpt,d
          SUBA    1,i
          STA     cpt,d
          CPA     0,i
          BRGT    findMin
+         LDA     isInval,d
+         CPA     1,i
+         BREQ    invalide
+         LDA     0,i
+         LDX     0,i
          BR      fin
 
+setInval:LDA     1,i
+         STA     isInval,d
+         BR      continu
+
 invalide:STRO    erreur,d 
-         BR      fin
+         LDA     0,i
+         LDX     0,i
+         BR      loop_in
          
 fin:     STOP                
 
-head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
+head:    .BLOCK  2           ; #2h tÃªte de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  2
 minAddr: .BLOCK  2           
-nbCaract:.BLOCK  2
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
 
 ;
 ;******* Structure de liste d'entiers
-; Une liste est constituée d'une chaîne de maillons.
+; Une liste est constituÃ©e d'une chaÃ®ne de maillons.
 ; Chaque maillon contient une valeur et l'adresse du maillon suivant
-; La fin de la liste est marquée arbitrairement par l'adresse 0
-mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
+; La fin de la liste est marquÃ©e arbitrairement par l'adresse 0
+mVal:    .EQUATE 0          ; #1h26a valeur de l'Ã©lÃ©ment dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
 mLength: .EQUATE 28          ; taille d'un maillon en octets
 ;
@@ -139,18 +163,21 @@ hpPtr:   .ADDRSS heap        ;address of next free byte
 heap:    .BLOCK  2           ;first byte in the heap
 
 ;
-; Temp
+; Variables
 ;
 tempA:   .BLOCK  2
+isInval: .BLOCK  2
+isEnd:   .BLOCK  2
+nbCaract:.BLOCK  2 
 
 ;
 ; Messages
 ;
 bienvenu:.ASCII  "Bienvenu dans le programme de chaine\x00"
-entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
-aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
+entrer:  .ASCII  "Entrez une ou plusieurs chaÃ®nes:\n\x00"
+aurevoir:.ASCII  "\nMerci, Ã  la prochaine!\x00"
 tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
-erreur:  .ASCII  "Entrée invalide\n\x00"
-deborde: .ASCII  "Erreur débordement\n\x00"
+erreur:  .ASCII  "EntrÃ©e invalide\n\x00"
+deborde: .ASCII  "Erreur dÃ©bordement\n\x00"
 
          .END                  
