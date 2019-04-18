@@ -17,22 +17,21 @@
 ;                                     T O  D O
 ;                                 ================
 ;
-;                            1.  Quand ca commence par un espace
-;                            2.  Quand ca fini par un nombre impair d'espace
+;                            1.   Quand ca commence par un espace
+;                            2.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
 
 ;                            ; // Lit la liste (à l'envers)
 
-         LDA     mLength,i   
+begin:   LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
-         CHARO   'n',i
          LDA     0,i
          CHARI   mVal,x      ;   X.val = getInt();
          LDBYTEA mVal,x
          CPA     '\n',i
-         BREQ    findMin
+         BREQ    end
          STA     avCaract,d
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
@@ -40,32 +39,34 @@
          LDA     cpt,d       
          ADDA    1,i         
          STA     cpt,d      
-         ADDX    1,i 
+         STA     nbCaract,d
 
 loop_in: LDA     avCaract,d
          CPA     ' ',i
          BREQ    avEspace
+         LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
          LDA     mLength,i   
          CHARI   mVal,d
+         LDBYTEA mVal,d 
          CPA     '\n',i
-         BREQ    findMin
-addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
+         BREQ    findMin      
+         ADDX    1,i
          STBYTEA mVal,x
          STA     avCaract,d
-         ADDX    1,i
-continu: LDA     head,d      
-         STA     mNext,x     ;   X.next = head;
-         STX     head,d      ;   head = X;
          BR      loop_in     ; } // fin for
 
-avEspace:CHARI   mVal,d
+avEspace:LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
+         CHARI   mVal,d
          LDBYTEA mVal,d
          CPA     '\n',i
          BREQ    findMin
          CPA     ' ',i
          BREQ    addTo       ; ajoute dans le maillon courrant 
          LDA     mLength,i   
-         CHARO   'n',i
          CALL    new         ;   X = new Maillon(); #mVal #mNext
          LDA     cpt,d       
          ADDA    1,i         
@@ -73,14 +74,28 @@ avEspace:CHARI   mVal,d
          LDA     0,i
          LDBYTEA mVal,d
          STA     avCaract,d
-         LDX     0,i
          STBYTEA mVal,x
-         BR      continu 
+         LDA     head,d      
+         STA     mNext,x     ;   X.next = head;
+         STX     head,d      ;   head = X;
+         BR      loop_in 
+
+addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
+         STA     mVal,x
+         STA     avCaract,d
+         ADDX    1,i
+         LDA     nbCaract,d
+         ADDA    1,i
+         STA     nbCaract,d
+         BR      loop_in     ; } // fin for
     
-findMin: LDX     head,d      
+findMin: LDA     nbCaract,d
+         CPA     28,i
+         BRGE    setInval 
+continu: LDX     head,d      
          STX     minAddr,d    
          LDBYTEA mVal,x     
-         STA     minVal,d
+         STA     minVal,d ; <-------------------------------------------
 loop_out:CPX     0,i         
          BREQ    out         ; for (X=head; X!=null; X=X.next) {
          LDBYTEA mVal,x
@@ -89,34 +104,86 @@ loop_out:CPX     0,i
          LDX     mNext,x     
          BR      loop_out    ; } // fin for
 
-setMin:  STA     minVal,d
+setMin:  STA     minVal,d    ; <----------------------------------------
          STX     minAddr,d
          LDX     mNext,x     
          BR      loop_out
 
-out:     DECO    minVal,d 
+out:     LDA     cpt,d
+         SUBA    1,i
+         STA     cpt,d
+         LDA     isInval,d
+if:      CPA     1,i
+         BREQ    and
+         BR      else
+and:     LDA     cpt,d
+         CPA     0,i
+         BREQ    invalide
+else:    LDA     isInval,d
+         CPA     1,i
+         BREQ    continu
+         CHARO   minVal2,d    ; <----------------------------------
          LDX     minAddr,d
          LDBYTEA 0xFF,i
          STBYTEA mVal,x
-         CHARO   ' ',i
          LDA     cpt,d
-         SUBA    1,i
-         STA     cpt,d
+         CPA     0,i
+         BREQ    continu2
+         CHARO   ' ',i
+         CHARO   '-',i
+         CHARO   '>',i
+         CHARO   ' ',i
+continu2:LDA     cpt,d
          CPA     0,i
          BRGT    findMin
-         BR      fin
+         LDA     0,i
+         LDX     0,i
+         STA     isInval,d
+         STA     nbCaract,d
+         STA     cpt,d
+         LDA     mLength,i 
+         CHARO   '\n',i
+         BR      begin
+
+setInval:LDA     1,i
+         STA     isInval,d
+         BR      continu
 
 invalide:STRO    erreur,d 
-         BR      fin
+         LDA     0,i
+         LDX     0,i
+         STA     isInval,d
+         STA     nbCaract,d
+         STA     cpt,d
+         LDA     mLength,i   
+         CHARO   '\n',i
+         BR      begin
          
-fin:     STOP                
+end:     STOP                
 
+;
+; Variables
+;
 head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
-minVal:  .BLOCK  2
-minAddr: .BLOCK  2           
-nbCaract:.BLOCK  2
+minVal:  .BLOCK  1           ; #1h <------------------------------------------------
+minVal2: .BLOCK  1           ; #1h <-----------------------------------------------
+minAddr: .BLOCK  2           ; #2h     
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
+isInval: .BLOCK  2           ; #2d
+nbCaract:.BLOCK  2           ; #2d
+tempA:   .BLOCK  2
+isEnd:   .BLOCK  2
+
+;
+; Messages
+;
+bienvenu:.ASCII  "Bienvenu dans le programme de chaine\x00"
+entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
+aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
+tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
+erreur:  .ASCII  "Entrée invalide\n\x00"
+deborde: .ASCII  "Erreur débordement\n\x00"
 
 ;
 ;******* Structure de liste d'entiers
@@ -125,7 +192,7 @@ avCaract:.BLOCK  2
 ; La fin de la liste est marquée arbitrairement par l'adresse 0
 mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
-mLength: .EQUATE 28          ; taille d'un maillon en octets
+mLength: .EQUATE 28         ; taille d'un maillon en octets
 ;
 ;
 ;******* operator new
@@ -138,19 +205,6 @@ new:     LDX     hpPtr,d     ;returned pointer
 hpPtr:   .ADDRSS heap        ;address of next free byte
 heap:    .BLOCK  2           ;first byte in the heap
 
-;
-; Temp
-;
-tempA:   .BLOCK  2
 
-;
-; Messages
-;
-bienvenu:.ASCII  "Bienvenu dans le programme de chaine\x00"
-entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
-aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
-tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
-erreur:  .ASCII  "Entrée invalide\n\x00"
-deborde: .ASCII  "Erreur débordement\n\x00"
 
          .END                  
