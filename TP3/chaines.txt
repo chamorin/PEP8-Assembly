@@ -1,5 +1,5 @@
 ; ************************************************************************************************
-;       Programme: Remise en ordre de CHA√éNES de caract√®res.     version PEP813 sous Linux
+;       Programme: Remise en ordre de CHA√?NES de caract√®res.     version PEP813 sous Linux
 ;
 ;        Suite √  une demande √  l'utilisateur,le programme affiche en ordre 
 ;        ASCII croissant les cha√Ænes des caract√®res entr√©es.
@@ -169,7 +169,6 @@ head:    .BLOCK  2           ; #2h tÍte de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  1           ; #1h <------------------------------------------------
 minVal2: .BLOCK  1           ; #1h <-----------------------------------------------
 minAddr: .BLOCK  2           ; #2h     
-head:    .BLOCK  2           ; #2h t√™te de liste (null (aka 0) si liste vide)
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
 isInval: .BLOCK  2           ; #2d
