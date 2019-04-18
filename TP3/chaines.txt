@@ -1,8 +1,8 @@
 ; ************************************************************************************************
-;       Programme: Remise en ordre de CHAÎNES de caractères.     version PEP813 sous Linux
+;       Programme: Remise en ordre de CHAÃŽNES de caractÃ¨res.     version PEP813 sous Linux
 ;
-;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
-;        ASCII croissant les chaînes des caractères entrées.
+;        Suite Ã  une demande Ã  l'utilisateur,le programme affiche en ordre 
+;        ASCII croissant les chaÃ®nes des caractÃ¨res entrÃ©es.
 ;
 ;       auteur:         Charles Morin
 ;       code permanent: MORC28019804
@@ -18,12 +18,13 @@
 ;                                 ================
 ;
 ;                            1.   Quand ca commence par un espace
-;                            2.   Quand ca fini par un nombre impair d'espace
+;                            2.   Quand ca commence par un espace
+;                            3.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
 
-;                            ; // Lit la liste (à l'envers)
+;                            ; // Lit la liste (Ã  l'envers)
 
 begin:   LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
@@ -82,6 +83,7 @@ avEspace:LDA     nbCaract,d
 
 addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
          STA     mVal,x
+         STBYTEA mVal,x
          STA     avCaract,d
          ADDX    1,i
          LDA     nbCaract,d
@@ -168,6 +170,7 @@ head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  1           ; #1h <------------------------------------------------
 minVal2: .BLOCK  1           ; #1h <-----------------------------------------------
 minAddr: .BLOCK  2           ; #2h     
+head:    .BLOCK  2           ; #2h tÃªte de liste (null (aka 0) si liste vide)
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
 isInval: .BLOCK  2           ; #2d
@@ -187,10 +190,10 @@ deborde: .ASCII  "Erreur débordement\n\x00"
 
 ;
 ;******* Structure de liste d'entiers
-; Une liste est constituée d'une chaîne de maillons.
+; Une liste est constituÃ©e d'une chaÃ®ne de maillons.
 ; Chaque maillon contient une valeur et l'adresse du maillon suivant
-; La fin de la liste est marquée arbitrairement par l'adresse 0
-mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
+; La fin de la liste est marquÃ©e arbitrairement par l'adresse 0
+mVal:    .EQUATE 0          ; #1h26a valeur de l'Ã©lÃ©ment dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
 mLength: .EQUATE 28         ; taille d'un maillon en octets
 ;
@@ -204,7 +207,5 @@ new:     LDX     hpPtr,d     ;returned pointer
          RET0                
 hpPtr:   .ADDRSS heap        ;address of next free byte
 heap:    .BLOCK  2           ;first byte in the heap
-
-
 
          .END                  
