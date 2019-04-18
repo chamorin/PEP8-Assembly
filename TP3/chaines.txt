@@ -1,7 +1,7 @@
 ; ************************************************************************************************
 ;       Programme: Remise en ordre de CHAÎNES de caractères.     version PEP813 sous Linux
 ;
-;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
+;        Suite �  une demande �  l'utilisateur,le programme affiche en ordre 
 ;        ASCII croissant les chaînes des caractères entrées.
 ;
 ;       auteur:         Charles Morin
@@ -18,13 +18,12 @@
 ;                                 ================
 ;
 ;                            1.   Quand ca commence par un espace
-;                            2.   Quand ca commence par un espace
-;                            3.   Quand ca fini par un nombre impair d'espace
+;                            2.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
 
-;                            ; // Lit la liste (à l'envers)
+;                            ; // Lit la liste (�  l'envers)
 
 begin:   LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
