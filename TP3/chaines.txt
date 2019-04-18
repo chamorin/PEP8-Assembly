@@ -123,8 +123,17 @@ and:     LDA     cpt,d
 else:    LDA     isInval,d
          CPA     1,i
          BREQ    continu
-         CHARO   minVal2,d    ; <----------------------------------
          LDX     minAddr,d
+while:   LDBYTEA mVal,x
+         STA     minVal,d
+         CPA     ' ',i
+         BREQ    continu3
+         CPA     0x00,i
+         BREQ    continu3
+         CHARO   minVal2,d   ; <----------------------------------
+         ADDX    1,i
+         BR      while
+continu3:LDX     minAddr,d
          LDBYTEA 0xFF,i
          STBYTEA mVal,x
          LDA     cpt,d
