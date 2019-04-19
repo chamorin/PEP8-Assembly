@@ -30,16 +30,15 @@
 ; Lecture initial d'un caractère
 ;
 begin:   LDA     mLength,i   
-         STRO    entrer,d
-continu4:CHARI   mVal,x
-         LDBYTEA mVal,x      ; Regarde si le caractère entré est un ENTER
+         CHARI   mVal,d
+         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
          CPA     ' ',i
-         BREQ    isEspa
+         BREQ    begin
          CALL    new         ;   X = new Maillon(); #mVal #mNext
-         LDA     cpt,d       ; Ajoute 1 au compteur de chaine 
-         ADDA    1,i         ;
-         STA     cpt,d       ;
-         STA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
+         STRO    entrer,d     
+         CHARO   '-',i       
+         CHARO   '>',i       
+         CHARO   ' ',i               
          LDA     0,i
          LDBYTEA mVal,d
          STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
@@ -49,14 +48,10 @@ continu4:CHARI   mVal,x
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
-         
-         BR      loop_in
-
-;
-; Est un espace
-;
-isEspa:  STA     avCaract,d
-         BR      continu4
+         LDA     cpt,d       ; Ajoute 1 au compteur de chaine 
+         ADDA    1,i         ;
+         STA     cpt,d       ;
+         STA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
 
 ;
 ; Lecture des caractères
@@ -204,7 +199,6 @@ continu3:LDX     minAddr,d
          BREQ    continu2
          CHARO   ' ',i       ; Affiche la flèche
          CHARO   '-',i       ;
-         CHARO   '-',i       ;
          CHARO   '>',i       ;
          CHARO   ' ',i       ;
 continu2:LDA     cpt,d
@@ -254,26 +248,9 @@ reset:   LDA     0,i
          STA     minAddr,d
          STA     nbChaine,d
          RET0
-  
-;
-; Fin du programme
-;       
-end:     LDA     cpt,d
-         CPA     1,i
-         BREQ    true1
-         STRO    aurevoir,d
-         STOP
-true1:   LDA     avCaract,d  ; Regle le cas des espaces seules
-         CPA     ' ',i       ;
-         BREQ    true2       ;
-         STRO    aurevoir,d  ;
-         STOP                ;
-true2:   CHARO   '-',i       ;
-         CHARO   '-',i       ;
-         CHARO   '>',i       ;
-         CHARO   ' ',i       ;
-         STRO    aurevoir,d  ;
-         STOP                ;
+         
+end:     STRO    aurevoir,d
+         STOP                
 
 ;
 ; Variables
