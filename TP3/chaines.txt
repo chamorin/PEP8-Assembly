@@ -1,8 +1,8 @@
 ; ************************************************************************************************
-;       Programme: Remise en ordre de CHAÃ?NES de caractÃ¨res.     version PEP813 sous Linux
+;       Programme: Remise en ordre de chaînes de caractères.     version PEP813 sous Linux
 ;
-;        Suite Ã  une demande Ã  l'utilisateur,le programme affiche en ordre 
-;        ASCII croissant les chaÃ®nes des caractÃ¨res entrÃ©es.
+;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
+;        ASCII croissant les chaînes des caractères entrées.
 ;
 ;       auteur:         Charles Morin
 ;       code permanent: MORC28019804
@@ -247,10 +247,10 @@ deborde: .ASCII  "Erreur débordement\n\x00"
 
 ;
 ;******* Structure de liste d'entiers
-; Une liste est constituÃ©e d'une chaÃ®ne de maillons.
+; Une liste est constituée d'une chaîne de maillons.
 ; Chaque maillon contient une valeur et l'adresse du maillon suivant
-; La fin de la liste est marquÃ©e arbitrairement par l'adresse 0
-mVal:    .EQUATE 0          ; #1h26a valeur de l'Ã©lÃ©ment dans le maillon
+; La fin de la liste est marquée arbitrairement par l'adresse 0
+mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
 mLength: .EQUATE 28         ; taille d'un maillon en octets
 ;
