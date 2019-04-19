@@ -25,6 +25,7 @@
 
          STRO    bienvenu,d
          STRO    message,d
+         STRO    entrer,d     
 
 ;
 ; Lecture initial d'un caractère
@@ -34,8 +35,7 @@ begin:   LDA     mLength,i
          LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
          CPA     ' ',i
          BREQ    begin
-         CALL    new         ;   X = new Maillon(); #mVal #mNext
-         STRO    entrer,d     
+         CALL    new         ;   X = new Maillon(); #mVal #mNext   
          CHARO   '-',i       
          CHARO   '>',i       
          CHARO   ' ',i               
@@ -126,8 +126,8 @@ continu: LDX     head,d
 loop_out:CPX     0,i         
          BREQ    out         ; for (X=head; X!=null; X=X.next) {
          LDBYTEA mVal,x
-         ;CPA     minVal,d
-         ;BREQ    checkNex
+         CPA     minVal,d
+         BREQ    checkNex
          CPA     minVal,d
          BRLE    setMin      ; Si le maillon évalué est plus petit que le maillon minimum
          LDX     mNext,x     
@@ -136,24 +136,54 @@ loop_out:CPX     0,i
 ;
 ; Si les deux maillons à comparer commence par la même valeur
 ;
-;checkNex:STX     tempX,d 
-;         STBYTEA tempA,d
-;while2:  ADDX    1,i
-;         STX     minAddr,d   
-;         LDBYTEA mVal,x      
-;         STA     minVal,d    
-;         LDBYTEA mVal,x
-;         CPA     minVal,d
-;         BRLT    setMin2
-;         LDBYTEA minVal,d
-;         CPA     mVal,x
-;         BRGT    setMin2
-;         BR      while2
-;setMin2: STA     minVal,d
-;         LDX     tempX,d
-;         LDBYTEA tempA,d
-;         BR      loop_out
+checkNex:STX     tempX,d 
+         STA     tempA,d
+         STX     tAddMai,d   ; Range l'adresse du maillon courrant
+         LDBYTEA mVal,x
+         STA     tValMai,d   ; Range la valeur du maillon courrant
+         LDX     minAddr,d   
+         STX     tAddMin,d   ; Range l'adresse du plus petit maillon
+         LDA     minVal,d    
+         STA     tValMin,d   ; Range la valeur du plus petit maillon
 
+while2:  LDX     tAddMin,d
+         ADDX    1,i
+         STX     tAddMin,d   
+         LDBYTEA mVal,x
+         STA     tValMin,d   
+         LDX     tAddMai,d
+         ADDX    1,i
+         STX     tAddMai,d   
+         LDBYTEA mVal,x
+         STA     tValMai,d 
+         CPA     tValMin,d
+         BRLT    setMin2
+         CPA     tValMin,d
+         BRGT    setMin3 
+         CPA     ' ',i
+         BREQ    setMin2
+         CPA     0x00,i
+         BREQ    setMin2
+         CPA     tValMin,d
+         BREQ    while2
+
+;
+; Maillon courrant est plus petit que le minimum
+;
+setMin2: LDX     tempX,d
+         STX     minAddr,d   ;
+         LDBYTEA mVal,x
+         STA     minVal,d
+         LDX     mNext,x
+         BR      loop_out
+
+;
+; Maillon minimum est plus petit que le courrant
+;
+setMin3: LDA     minVal,d
+         LDX     tempX,d  
+         LDX     mNext,x
+         BR      loop_out
 
 ;
 ; Indique le plus petit maillon
@@ -207,6 +237,7 @@ continu2:LDA     cpt,d
          CALL    reset
          LDA     mLength,i 
          CHARO   '\n',i
+         STRO    entrer,d
          BR      begin       ; Retourne au début
 
 ;
@@ -233,6 +264,7 @@ invalide:LDX     minAddr,d
          STRO    erreur,d 
          CALL    reset
          LDA     mLength,i   
+         STRO    entrer,d  
          BR      begin
 
 ;
@@ -266,6 +298,10 @@ nbCaract:.BLOCK  2           ; #2d
 nbChaine:.BLOCK  2           ; #2d
 tempA:   .BLOCK  2
 tempX:   .BLOCK  2
+tAddMin: .BLOCK  2           ; #2h
+tAddMai: .BLOCK  2           ; #2h
+tValMin: .BLOCK  2           ; #2d
+tValMai: .BLOCK  2           ; #2d
 isEnd:   .BLOCK  2
 
 ;
