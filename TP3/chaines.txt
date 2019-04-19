@@ -16,9 +16,9 @@
 ;
 ;                                     T O  D O
 ;                                 ================
-;
-;                            1.   Quand ca commence par un espace
-;                            2.   Quand ca fini par un nombre impair d'espace
+;                            1.   Comparer tous les caractères
+;                            2.   Quand ca commence par un espace
+;                            3.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
@@ -145,7 +145,7 @@ and:     LDA     cpt,d       ; Sinon regarde si le compteur est à zero
          BREQ    invalide    ; Affiche le message d'erreur
 else:    LDA     isInval,d
          CPA     1,i         ; Si l'entré est invalide
-         BREQ    continu     ; évite l'affichage
+         BREQ    invalMin    ; évite l'affichage
 
          LDX     minAddr,d   ; Affiche la chaine complete   
 while:   LDBYTEA mVal,x      ;
@@ -178,6 +178,14 @@ continu2:LDA     cpt,d
          BR      begin       ; Retourne au début
 
 ;
+; Remplace la chaine par 0xFF lorsque c'est invalide
+;
+invalMin:LDX     minAddr,d
+         LDBYTEA 0xFF,i      ; Remplace la chaine par 0xFF 
+         STBYTEA mVal,x
+         BR      continu
+
+;
 ; Indique que l'entrée est invalide
 ;
 setInval:LDA     1,i
@@ -187,7 +195,10 @@ setInval:LDA     1,i
 ;
 ; Affiche le message d'erreur
 ;
-invalide:STRO    erreur,d 
+invalide:LDX     minAddr,d
+         LDBYTEA 0xFF,i      ; Remplace la chaine par 0xFF 
+         STBYTEA mVal,x
+         STRO    erreur,d 
          CALL    reset
          LDA     mLength,i   
          CHARO   '\n',i
