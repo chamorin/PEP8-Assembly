@@ -25,149 +25,187 @@
 
 ;                            ; // Lit la liste (Ã  l'envers)
 
+;
+; Lecture initial d'un caractère
+;
 begin:   LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
          LDA     0,i
          CHARI   mVal,x      ;   X.val = getInt();
-         LDBYTEA mVal,x
-         CPA     '\n',i
-         BREQ    end
-         STA     avCaract,d
+         LDBYTEA mVal,x      ; Range mVal dans le tableau à la position X
+         CPA     '\n',i      ; Regarde si le caractère entré est un ENTER   
+         BREQ    end         ; Si le caractère est un ENTER seul le programme termine
+         STA     avCaract,d  ; Range le caractère entré dans avCaract
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
-         LDA     cpt,d       
-         ADDA    1,i         
-         STA     cpt,d      
-         STA     nbCaract,d
+         LDA     cpt,d       ; Ajoute 1 au compteur de chaine 
+         ADDA    1,i         ;
+         STA     cpt,d       ;
+         STA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
 
-loop_in: LDA     avCaract,d
-         CPA     ' ',i
-         BREQ    avEspace
+;
+; Lecture des caractères
+;
+loop_in: LDA     avCaract,d  ; Regarde si le avCaract est un espace
+         CPA     ' ',i       ;
+         BREQ    avEspace    ;
          LDA     nbCaract,d
-         ADDA    1,i
-         STA     nbCaract,d
+         ADDA    1,i         ; Ajoute 1 au compteur de caractère 
+         STA     nbCaract,d  ;
          LDA     mLength,i   
          CHARI   mVal,d
-         LDBYTEA mVal,d 
-         CPA     '\n',i
-         BREQ    findMin      
+         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         CPA     '\n',i      ;
+         BREQ    setNbCh     ; Si oui va aux étape de trie
          ADDX    1,i
-         STBYTEA mVal,x
-         STA     avCaract,d
+         STBYTEA mVal,x      ; Range le BYTE un index plus loin que le précédent
+         STA     avCaract,d  ; Range le caractère entré dans avCaract
          BR      loop_in     ; } // fin for
 
-avEspace:LDA     nbCaract,d
-         ADDA    1,i
-         STA     nbCaract,d
+;
+; Création de nouveaux maillons
+;
+avEspace:LDA     nbCaract,d  ; Ajoute au compteur de caractère
+         ADDA    1,i         ;
+         STA     nbCaract,d  ;
          CHARI   mVal,d
-         LDBYTEA mVal,d
-         CPA     '\n',i
-         BREQ    findMin
-         CPA     ' ',i
-         BREQ    addTo       ; ajoute dans le maillon courrant 
+         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         CPA     '\n',i      ;
+         BREQ    setNbCh     ; Si oui va aux étape de trie
+         CPA     ' ',i       ; Si c'est un espace
+         BREQ    addTo       ; Ajoute dans le maillon courrant 
          LDA     mLength,i   
          CALL    new         ;   X = new Maillon(); #mVal #mNext
-         LDA     cpt,d       
-         ADDA    1,i         
-         STA     cpt,d       
+         LDA     cpt,d       ; Ajoute 1 au compteur de chaine 
+         ADDA    1,i         ;
+         STA     cpt,d       ;
          LDA     0,i
          LDBYTEA mVal,d
-         STA     avCaract,d
-         STBYTEA mVal,x
+         STA     avCaract,d  ; Range le caractère entré dans avCaract
+         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
          BR      loop_in 
 
+;
+; Ajout aux maillons existant
+;
 addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
          STA     mVal,x
-         STBYTEA mVal,x
-         STA     avCaract,d
+         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
+         STA     avCaract,d  ; Range le caractère entré dans avCaract
          ADDX    1,i
-         LDA     nbCaract,d
-         ADDA    1,i
-         STA     nbCaract,d
+         LDA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
+         ADDA    1,i         ;
+         STA     nbCaract,d  ;
          BR      loop_in     ; } // fin for
-    
+
+;
+; Trouve le plus petit maillon
+;    
+setNbCh: LDA     cpt,d       ; Indique le nombre de chaine
+         STA     nbChaine,d  ;
 findMin: LDA     nbCaract,d
-         CPA     28,i
-         BRGE    setInval 
+         CPA     28,i        ; Si il y a plus que 26 caractère
+         BRGE    setInval    ; L'entré est invalide
 continu: LDX     head,d      
-         STX     minAddr,d    
-         LDBYTEA mVal,x     
-         STA     minVal,d ; <-------------------------------------------
+         STX     minAddr,d   ; Le dernier maillon est le plus petit maillon initial 
+         LDBYTEA mVal,x      ;
+         STA     minVal,d    ; 
 loop_out:CPX     0,i         
          BREQ    out         ; for (X=head; X!=null; X=X.next) {
          LDBYTEA mVal,x
          CPA     minVal,d
-         BRLE    setMin
+         BRLE    setMin      ; Si le maillon évalué est plus petit que le maillon minimum
          LDX     mNext,x     
          BR      loop_out    ; } // fin for
 
-setMin:  STA     minVal,d    ; <----------------------------------------
-         STX     minAddr,d
+;
+; Indique le plus petit maillon
+;
+setMin:  STA     minVal,d    ; On change le maillon minimum
+         STX     minAddr,d   ;
          LDX     mNext,x     
          BR      loop_out
 
-out:     LDA     cpt,d
+;
+; Affiche le plus petit maillon
+;
+out:     LDA     cpt,d       
          SUBA    1,i
          STA     cpt,d
          LDA     isInval,d
-if:      CPA     1,i
-         BREQ    and
+if:      CPA     1,i         ; Si l'entré est invalide
+         BREQ    and         ; évite l'affichage
          BR      else
-and:     LDA     cpt,d
+and:     LDA     cpt,d       ; Sinon regarde si le compteur est à zero
          CPA     0,i
-         BREQ    invalide
+         BREQ    invalide    ; Affiche le message d'erreur
 else:    LDA     isInval,d
-         CPA     1,i
-         BREQ    continu
-         LDX     minAddr,d
-while:   LDBYTEA mVal,x
-         STA     minVal,d
-         CPA     ' ',i
-         BREQ    continu3
-         CPA     0x00,i
-         BREQ    continu3
-         CHARO   minVal2,d   ; <----------------------------------
-         ADDX    1,i
-         BR      while
+         CPA     1,i         ; Si l'entré est invalide
+         BREQ    continu     ; évite l'affichage
+
+         LDX     minAddr,d   ; Affiche la chaine complete   
+while:   LDBYTEA mVal,x      ;
+         STA     minVal,d    ;
+         CPA     ' ',i       ;
+         BREQ    continu3    ;
+         CPA     0x00,i      ;
+         BREQ    continu3    ;
+         CHARO   minVal2,d   ;
+         ADDX    1,i         ;
+         BR      while       ;
+
 continu3:LDX     minAddr,d
-         LDBYTEA 0xFF,i
-         STBYTEA mVal,x
+         LDBYTEA 0xFF,i      ; Remplace la chaine par 0xFF 
+         STBYTEA mVal,x      ;
          LDA     cpt,d
-         CPA     0,i
+         CPA     0,i         ; Si c'est le dernier caractère n'affiche pas la flèche
          BREQ    continu2
-         CHARO   ' ',i
-         CHARO   '-',i
-         CHARO   '>',i
-         CHARO   ' ',i
+         CHARO   ' ',i       ; Affiche la flèche
+         CHARO   '-',i       ;
+         CHARO   '-',i       ;
+         CHARO   '>',i       ;
+         CHARO   ' ',i       ;
 continu2:LDA     cpt,d
          CPA     0,i
          BRGT    findMin
-         LDA     0,i
-         LDX     0,i
-         STA     isInval,d
-         STA     nbCaract,d
-         STA     cpt,d
+         CALL    reset
          LDA     mLength,i 
          CHARO   '\n',i
-         BR      begin
+         BR      begin       ; Retourne au début
 
+;
+; Indique que l'entrée est invalide
+;
 setInval:LDA     1,i
          STA     isInval,d
          BR      continu
 
+;
+; Affiche le message d'erreur
+;
 invalide:STRO    erreur,d 
-         LDA     0,i
+         CALL    reset
+         LDA     mLength,i   
+         CHARO   '\n',i
+         BR      begin
+
+;
+; Réinitialise toutes les variables
+;  
+reset:   LDA     0,i
          LDX     0,i
          STA     isInval,d
          STA     nbCaract,d
          STA     cpt,d
-         LDA     mLength,i   
-         CHARO   '\n',i
-         BR      begin
+         STA     minVal,d
+         STA     minVal2,d
+         STA     minAddr,d
+         STA     nbChaine,d
+         RET0
          
 end:     STOP                
 
@@ -175,13 +213,14 @@ end:     STOP
 ; Variables
 ;
 head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
-minVal:  .BLOCK  1           ; #1h <------------------------------------------------
-minVal2: .BLOCK  1           ; #1h <-----------------------------------------------
+minVal:  .BLOCK  1           ; #1h 
+minVal2: .BLOCK  1           ; #1h
 minAddr: .BLOCK  2           ; #2h     
 cpt:     .BLOCK  2           ; #2d compteur de boucle
 avCaract:.BLOCK  2
 isInval: .BLOCK  2           ; #2d
 nbCaract:.BLOCK  2           ; #2d
+nbChaine:.BLOCK  2           ; #2d
 tempA:   .BLOCK  2
 isEnd:   .BLOCK  2
 
