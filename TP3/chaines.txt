@@ -17,22 +17,29 @@
 ;                                     T O  D O
 ;                                 ================
 ;                            1.   Comparer tous les caractères
-;                            2.   Quand ca commence par un espace
-;                            3.   Quand ca fini par un nombre impair d'espace
 ;
 ;************************************************************************************************
 
 
 ;                            ; // Lit la liste (Ã  l'envers)
 
+         STRO    bienvenu,d
+         STRO    message,d
+
 ;
 ; Lecture initial d'un caractère
 ;
 begin:   LDA     mLength,i   
+         CHARI   mVal,d
+         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         CPA     ' ',i
+         BREQ    begin
          CALL    new         ;   X = new Maillon(); #mVal #mNext
          LDA     0,i
-         CHARI   mVal,x      ;   X.val = getInt();
-         LDBYTEA mVal,x      ; Range mVal dans le tableau à la position X
+         STRO    entrer,d
+         LDA     0,i
+         LDBYTEA mVal,d
+         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
          CPA     '\n',i      ; Regarde si le caractère entré est un ENTER   
          BREQ    end         ; Si le caractère est un ENTER seul le programme termine
          STA     avCaract,d  ; Range le caractère entré dans avCaract
@@ -201,7 +208,6 @@ invalide:LDX     minAddr,d
          STRO    erreur,d 
          CALL    reset
          LDA     mLength,i   
-         CHARO   '\n',i
          BR      begin
 
 ;
@@ -218,7 +224,8 @@ reset:   LDA     0,i
          STA     nbChaine,d
          RET0
          
-end:     STOP                
+end:     STRO    aurevoir,d
+         STOP                
 
 ;
 ; Variables
@@ -238,12 +245,11 @@ isEnd:   .BLOCK  2
 ;
 ; Messages
 ;
-bienvenu:.ASCII  "Bienvenu dans le programme de chaine\x00"
+bienvenu:.ASCII  "Bienvenu dans le programme de chaine.\n\n\x00"
 entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
 aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
-tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
+message: .ASCII  "Ce programme accepte une valeur d'entrée de l'utilisateur\npouvant aller jusqu'à 26 caractères.\nLe programme affiche alors les chaînes,\nséparées par un ou plusieurs espaces, dans leur ordre croissant de valeur.\nPour terminer le programme, l'utilisateur n'a\nqu'à entrer un ENTER seul.\n\n\x00"
 erreur:  .ASCII  "Entrée invalide\n\x00"
-deborde: .ASCII  "Erreur débordement\n\x00"
 
 ;
 ;******* Structure de liste d'entiers
