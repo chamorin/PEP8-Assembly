@@ -13,14 +13,14 @@
          STRO    bienvenu,d  
 
 ;
-; boucle qui va lire chacun des caractères
+; boucle qui va lire chacun des caractÃ¨res
 ;
-boucle:  CHARI   lettre,d    ; prend une lettre en entrée
-         LDBYTEA lettre,d    ; charge la lettre dans le régistre A
-         CPA     '\n',i      ; compare le régistre A avec un line feed
+boucle:  CHARI   lettre,d    ; prend une lettre en entrÃ©e
+         LDBYTEA lettre,d    ; charge la lettre dans le rÃ©gistre A
+         CPA     '\n',i      ; compare le rÃ©gistre A avec un line feed
          BREQ    resultat    ; si la lettre est un line feed, on calcule la valeur du nom
-         STA     temp,d      ; store le contenu du régistre A dans temp
-         LDX     codeVal,d   ; charge le codeVal dans le régistre X
+         STA     temp,d      ; store le contenu du rÃ©gistre A dans temp
+         LDX     codeVal,d   ; charge le codeVal dans le rÃ©gistre X
 
 ;
 ; si c'est une minuscule
@@ -55,9 +55,9 @@ ifTir:   CPA     45,i        ; regarde si il s'agit d'un tiret
          SUBX    18,i        ; donne le pointage voulu au tiret
          STA     temp2,d     
          LDA     lettreAv,d  
-         CPA     '-',i       ; regarde si le caractère avant est un tiret
+         CPA     '-',i       ; regarde si le caractÃ¨re avant est un tiret
          BREQ    mauvais     ; si oui va dans mauvais
-         CPA     '\'',i      ; regarde si le caractère avant est un apostrophe
+         CPA     '\'',i      ; regarde si le caractÃ¨re avant est un apostrophe
          BREQ    mauvais     ; si oui va dans mauvais
          BR      storeVal    
 elseTir: BR      ifApo       ; n'est pas un tiret
@@ -67,12 +67,12 @@ elseTir: BR      ifApo       ; n'est pas un tiret
 ;
 ifApo:   CPA     39,i        ; regarde si il s'agit d'un apostrophe
          BRNE    elseApo     
-         SUBX    11,i        ; donne le pointage voulu à l'apostrophe
+         SUBX    11,i        ; donne le pointage voulu Ã  l'apostrophe
          STA     temp2,d     
          LDA     lettreAv,d  
-         CPA     '-',i       ; regarde si le caractère avant est un tiret
+         CPA     '-',i       ; regarde si le caractÃ¨re avant est un tiret
          BREQ    mauvais     ; si oui va dans mauvais
-         CPA     '\'',i      ; regarde si le caractère avant est un apostrophe
+         CPA     '\'',i      ; regarde si le caractÃ¨re avant est un apostrophe
          BREQ    mauvais     ; si oui va dans mauvais
          BR      storeVal    
 elseApo: BR      ifEsp       ; n'est pas un apostrophe
@@ -92,11 +92,11 @@ elseEsp: LDA     -1,i        ; est invalide
          BR      skipVal     
 
 mauvais: LDA     -1,i        
-         STA     verif,d     ; attribue -1 à verif pour signaler une entrée invalide
+         STA     verif,d     ; attribue -1 Ã  verif pour signaler une entrÃ©e invalide
          BR      storeVal    
 
 mauvais2:LDA     -1,i        
-         STA     verif,d     ; attribue -1 à verif pour signaler une entrée invalide
+         STA     verif,d     ; attribue -1 Ã  verif pour signaler une entrÃ©e invalide
          BR      verifFin    
 
 ;
@@ -116,10 +116,10 @@ ifY:     ADDX    25,i
          BR      continue    
 
 ;
-; ajoute la valeur du caractère au résultat final
+; ajoute la valeur du caractÃ¨re au rÃ©sultat final
 ;
 storeVal:LDA     temp2,d     
-         ADDX    temp,d      ; ajoute temp dans le régistre X (codeVal + temp)
+         ADDX    temp,d      ; ajoute temp dans le rÃ©gistre X (codeVal + temp)
          CPA     97,i        ; verifie si la lettre est un a
          BREQ    ifA         
          CPA     65,i        ; verifie si la lettre est un A
@@ -144,18 +144,18 @@ storeVal:LDA     temp2,d
          BREQ    ifY         
          CPA     89,i        ; verifie si la lettre est un Y
          BREQ    ifY         
-continue:STX     codeVal,d   ; store le contenu du régistre X dans codeVal
-skipVal: LDX     1,i         ; déplace 1 dans le régistre X
+continue:STX     codeVal,d   ; store le contenu du rÃ©gistre X dans codeVal
+skipVal: LDX     1,i         ; dÃ©place 1 dans le rÃ©gistre X
          STA     lettreAv,d  
          BR      boucle      ; recommence pour la prochaine lettre
 
 ;
-; éviter des étapes lorsque c'est un espace
+; Ã©viter des Ã©tapes lorsque c'est un espace
 ;
 storeEsp:LDA     temp2,d     
-         ADDX    temp,d      ; ajoute temp dans le régistre X (codeVal + temp)
-         STX     codeVal,d   ; store le contenu du régistre X dans codeVal
-         LDX     1,i         ; déplace 1 dans le régistre X
+         ADDX    temp,d      ; ajoute temp dans le rÃ©gistre X (codeVal + temp)
+         STX     codeVal,d   ; store le contenu du rÃ©gistre X dans codeVal
+         LDX     1,i         ; dÃ©place 1 dans le rÃ©gistre X
          BR      boucle      ; recommence pour la prochaine lettre
 
 ;
@@ -170,10 +170,10 @@ modulo:  SUBA    10,i
          BR      modulo      
 
 ;
-; créer le résultat final
+; crÃ©er le rÃ©sultat final
 ;
-resultat:CPX     0,i         ; compare le régistre X à 0
-         BREQ    termine     ; si le régistre X est égale à 0 va à termine
+resultat:CPX     0,i         ; compare le rÃ©gistre X Ã  0
+         BREQ    termine     ; si le rÃ©gistre X est Ã©gale Ã  0 va Ã  termine
          STA     temp2,d     
          LDA     lettreAv,d  ; regarde si la lettre avant la fin de ligne est valide
          CPA     '-',i       ; si c'est un tiret, c'est invalide
@@ -189,7 +189,7 @@ verifFin:LDA     verif,d
          BR      modulo      
 
 ;
-; affiche le pointage final du nom et remet les valeurs des régistre et variables à zéro
+; affiche le pointage final du nom et remet les valeurs des rÃ©gistre et variables Ã  zÃ©ro
 ;
 afficher:STRO    message,d   ; affiche le message pour le code de validation
          DECO    codeVal,d   ; affiche le code de validation
@@ -198,7 +198,7 @@ afficher:STRO    message,d   ; affiche le message pour le code de validation
          STRO    tiret,d     
          LDA     '-',i       
          STA     lettreAv,d  
-         LDX     0,i         ; charge 0 dans le régistre X
+         LDX     0,i         ; charge 0 dans le rÃ©gistre X
          LDA     0,i         
          STA     temp2,d
          STX     codeVal,d   
@@ -206,13 +206,13 @@ afficher:STRO    message,d   ; affiche le message pour le code de validation
          BR      boucle      ; mot termine, va au prochain
 
 ;
-; si la vérif indique une entrée invalide, le programme vient ici
+; si la vÃ©rif indique une entrÃ©e invalide, le programme vient ici
 ;
 invalide:STRO    erreur,d    ; affiche le message d'erreur
          STRO    tiret,d     
          LDA     '-',i       
          STA     lettreAv,d  
-         LDX     0,i         ; charge 0 dans le régistre X
+         LDX     0,i         ; charge 0 dans le rÃ©gistre X
          LDA     0,i
          STA     temp2,d     
          STA     verif,d     
@@ -228,12 +228,12 @@ termine: STRO    aurevoir,d
       
 lettre:  .BLOCK  2           
 lettreAv:.WORD   '-'         
-bienvenu:.ASCII  "Bienvenu dans le programme de nom de famille!\nLe programme va additionner chacune des positions\ndes lettres dans l'alphabet contenue dans le nom de famille\npour ensuite appliquer un modulo 10 au résultat.\nAinsi, vous pourrez donc voir le pointage du nom entré.\nPour quitter le programme entrez ENTER.\n\nVeuillez entrer un nom de famille: \x00"
+bienvenu:.ASCII  "Bienvenu dans le programme de nom de famille!\nLe programme va additionner chacune des positions\ndes lettres dans l'alphabet contenue dans le nom de famille\npour ensuite appliquer un modulo 10 au rÃ©sultat.\nAinsi, vous pourrez donc voir le pointage du nom entrÃ©.\nPour quitter le programme entrez ENTER.\n\nVeuillez entrer un nom de famille: \x00"
 entrer:  .ASCII  "Veuillez entrer un nom de famille: \x00"
-aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
+aurevoir:.ASCII  "\nMerci, Ã  la prochaine!\x00"
 message: .ASCII  "\nLe code de validation est \x00"
 tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
-erreur:  .ASCII  "\nEntrée invalide\n\x00"
+erreur:  .ASCII  "\nEntrÃ©e invalide\n\x00"
 codeVal: .BLOCK  2           
 temp:    .BLOCK  2           
 temp2:   .BLOCK  2       
