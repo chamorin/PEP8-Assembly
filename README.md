@@ -8,3 +8,6 @@ http://www.martinb.uqam.ca/tp2h19.html
 
 ### TP3
 http://www.martinb.uqam.ca/tp3h19.html
+
+### PEP8
+http://computersystemsbook.com/4th-edition/pep8/
