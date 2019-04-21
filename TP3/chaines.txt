@@ -11,16 +11,6 @@
 ;       cours:          INF2171
 ; ************************************************************************************************
 ;
-
-;************************************************************************************************
-;
-;                                     T O  D O
-;                                 ================
-;                            1.   Comparer tous les caractères
-;
-;************************************************************************************************
-
-
 ;                            ; // Lit la liste (Ã  l'envers)
 
          STRO    bienvenu,d
@@ -145,7 +135,6 @@ checkNex:STX     tempX,d
          STX     tAddMin,d   ; Range l'adresse du plus petit maillon
          LDA     minVal,d    
          STA     tValMin,d   ; Range la valeur du plus petit maillon
-
 while2:  LDX     tAddMin,d
          ADDX    1,i
          STX     tAddMin,d   
