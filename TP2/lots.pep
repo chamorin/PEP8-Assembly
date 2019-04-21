@@ -1,14 +1,14 @@
 ; ************************************************************************************************
-;       Programme: Analyse des LOTS gagnants à la loterie.     version PEP813 sous Linux
+;       Programme: Analyse des LOTS gagnants Ã  la loterie.     version PEP813 sous Linux
 ;
-;        Ce programme analyse les lots gagnants entrés par l'utilisateur.
-;        Le programme va demander l'entré d'un maximum de 7 lots
-;        allant de 0.0 à 100.0. Lorsque l'utilisateur appuie ENTER,
-;        le programme affiche le lot maximum, la moyenne des lots et l'écart-type.
+;        Ce programme analyse les lots gagnants entrÃ©s par l'utilisateur.
+;        Le programme va demander l'entrÃ© d'un maximum de 7 lots
+;        allant de 0.0 Ã  100.0. Lorsque l'utilisateur appuie ENTER,
+;        le programme affiche le lot maximum, la moyenne des lots et l'Ã©cart-type.
 ;        Finalement, lorsque l'utilisateur entre seulement ENTER,
-;        le programme cesse de demander des lots et affiche le nombre de périodes de tirages,
+;        le programme cesse de demander des lots et affiche le nombre de pÃ©riodes de tirages,
 ;        le nombre total de tirages et la moyenne des moyennes des lots gagnants.
-;        Le programme affiche donc son message de fin et s'arrête.
+;        Le programme affiche donc son message de fin et s'arrÃªte.
 ;
 ;       auteur:         Charles Morin
 ;       code permanent: MORC28019804
@@ -24,17 +24,17 @@
          LDX      0,i
          LDA      0,i
          STRO    tiret,d
-         STRO    entrer,d    ; Affiche l'invitation à l'utilisateur à rentrer les lots
+         STRO    entrer,d    ; Affiche l'invitation Ã  l'utilisateur Ã  rentrer les lots
          CHARI   caract,d    ; Entre un chiffre
          LDBYTEA caract,d         
          CPA     '\n',i      ; Regarde si c'est une fin de ligne
-         BREQ    calcFin     ; Si c'est la fin, il vérifie s'il n'y a pas d'autre lots
+         BREQ    calcFin     ; Si c'est la fin, il vÃ©rifie s'il n'y a pas d'autre lots
          BR      continu5
          
 boucle:  CHARI   caract,d    ; Entre un chiffre
          LDBYTEA caract,d         
          CPA     '\n',i      ; Regarde si c'est une fin de ligne
-         BREQ    verifFin    ; Si c'est la fin, il vérifie s'il n'y a pas d'autre lots
+         BREQ    verifFin    ; Si c'est la fin, il vÃ©rifie s'il n'y a pas d'autre lots
 continu5:STA     tempA,d     ; Remet la valeur du chiffre dans le registre A
          LDA     0,i
          STA     estFin,d
@@ -44,55 +44,55 @@ continu5:STA     tempA,d     ; Remet la valeur du chiffre dans le registre A
 ;
 ; Ajout de chaque chiffre dans le tableau
 ;  
-ajoutVal:SUBA    48,i        ; Soustrait 48 de la valeur ASCII du caractère pour avoir sa valeur décimal
-         CPA     POINT,d     ; Regarde si le caractère entré est un point
+ajoutVal:SUBA    48,i        ; Soustrait 48 de la valeur ASCII du caractÃ¨re pour avoir sa valeur dÃ©cimal
+         CPA     POINT,d     ; Regarde si le caractÃ¨re entrÃ© est un point
          BREQ    estPoint    
-         CPA     ESPACE,d    ; Regarde si le caractère entré est un espace
+         CPA     ESPACE,d    ; Regarde si le caractÃ¨re entrÃ© est un espace
          BREQ    estEspa 
          STA     tempA,d
-interval:LDA     0,i         ; Si le chiffre est plus grand ou égale à zéro
+interval:LDA     0,i         ; Si le chiffre est plus grand ou Ã©gale Ã  zÃ©ro
 if:      CPA     tempA,d         
          BRGT    else        
-         LDA     tempA,d     ; Si le chiffre est plus petit ou égale à 9
+         LDA     tempA,d     ; Si le chiffre est plus petit ou Ã©gale Ã  9
          CPA     9,i     
-         BRGT    else        ; S'il ne répond à aucun des critère il est invalide
-then:    BR      add         ; S'il n'est pas valide, il est ajouté au tableau
+         BRGT    else        ; S'il ne rÃ©pond Ã  aucun des critÃ¨re il est invalide
+then:    BR      add         ; S'il n'est pas valide, il est ajoutÃ© au tableau
 else:    BR      setInva1    ; Est invalide 
-add:     ADDA    tabLots,x   ; Est ajouté au tableau
+add:     ADDA    tabLots,x   ; Est ajoutÃ© au tableau
          STA     tabLots,x   
-         LDA     avCaract,d  ; Le contenu du régistre A est le caractère d'avant
-         CPA     POINT,d     ; Regarde si le caractère d'avant est un point 
-         BREQ    avPoint     ; Le caractère d'avant est un point
+         LDA     avCaract,d  ; Le contenu du rÃ©gistre A est le caractÃ¨re d'avant
+         CPA     POINT,d     ; Regarde si le caractÃ¨re d'avant est un point 
+         BREQ    avPoint     ; Le caractÃ¨re d'avant est un point
          LDA     estDeci,d
          CPA     1,i
          BREQ    setInva1    ; Est invalide 
          LDA     tempA,d
-         STA     avCaract,d  ; Remplace le caractère d'avant par celui lu présentement
-         BR      multi10     ; Multiplie le contenu du tableau à X par 10
+         STA     avCaract,d  ; Remplace le caractÃ¨re d'avant par celui lu prÃ©sentement
+         BR      multi10     ; Multiplie le contenu du tableau Ã  X par 10
 
 ;
-; Lorsque le caractère d'avant est un point
+; Lorsque le caractÃ¨re d'avant est un point
 ;
 avPoint: LDA     tempA,d
-         STA     avCaract,d  ; Remplace le caractère d'avant par celui lu présentement
+         STA     avCaract,d  ; Remplace le caractÃ¨re d'avant par celui lu prÃ©sentement
          LDA     0,i  
          BR      boucle
 
 ;
-; Lorsque le caractère d'avant est un espace
+; Lorsque le caractÃ¨re d'avant est un espace
 ;
 avEspa:  LDA     0,i
          BR      boucle
 
 ;
-; Lorsque le caractère lu présentement est un point
+; Lorsque le caractÃ¨re lu prÃ©sentement est un point
 ;
 estPoint:STA     tempA,d
          LDA     avCaract,d  
-         CPA     POINT,d     ; Le caractère d'avant est un point
+         CPA     POINT,d     ; Le caractÃ¨re d'avant est un point
          BREQ    setInva1    ; Est invalide 
          LDA     estDeci,d
-         CPA     1,i         ; Le lot a un chiffre à virgule
+         CPA     1,i         ; Le lot a un chiffre Ã  virgule
          BREQ    setInva1    ; Est invalide
          LDA     1,i
          STA     estDeci,d
@@ -102,20 +102,20 @@ estPoint:STA     tempA,d
          BR      boucle      ; Est un point
 
 ;
-; Lorsque le caractère lu présentement est un espace
+; Lorsque le caractÃ¨re lu prÃ©sentement est un espace
 ;
 estEspa: LDA     avCaract,d  
-         CPA     ESPACE,d    ; Le caractère d'avant est un espace
+         CPA     ESPACE,d    ; Le caractÃ¨re d'avant est un espace
          BREQ    avEspa
          ADDX    2,i
          LDA     ESPACE,d
-         STA     avCaract,d  ; Le caractère d'avant est maintenant un espace
+         STA     avCaract,d  ; Le caractÃ¨re d'avant est maintenant un espace
          LDA     0,i
          STA     estDeci,d
          BR      boucle      ; Est un espace
 
 ;
-; Multiplication par 10 du régistre A
+; Multiplication par 10 du rÃ©gistre A
 ;
 multi10: LDA     tabLots,x   
          ASLA                ; * 2
@@ -133,7 +133,7 @@ multi10: LDA     tabLots,x
          BR      boucle
 
 ;
-; Transforme les négatifs en positifs
+; Transforme les nÃ©gatifs en positifs
 ;
 setPosi: NEGA    
          STA     tabLots,x  
@@ -146,39 +146,39 @@ setPosi: NEGA
 DIVISE:  SUBSP   2,i         ; empilons le diviseur #diviseu
          STX     diviseu,s   
          LDX     diviseu,s   ;
-         BREQ    retdiv      ; division par 0 tolérée
-         BRLT    zerocalc    ; diviseur négatif retourne 0 comme quotient et comme reste
+         BREQ    retdiv      ; division par 0 tolÃ©rÃ©e
+         BRLT    zerocalc    ; diviseur nÃ©gatif retourne 0 comme quotient et comme reste
          CPA     0,i         
-         BRLE    zerocalc    ; dividende négatif retourne 0 comme quotient et comme reste
+         BRLE    zerocalc    ; dividende nÃ©gatif retourne 0 comme quotient et comme reste
          LDX     0,i         ; initialisation du quotient
 soustrai:ADDX    1,i         
          SUBA    diviseu,s   
-         BRGE    soustrai    ; soustraction répétitive
-         SUBX    1,i         ; redéfaisons la dernière soustraction
+         BRGE    soustrai    ; soustraction rÃ©pÃ©titive
+         SUBX    1,i         ; redÃ©faisons la derniÃ¨re soustraction
          ADDA    diviseu,s   
          BR      retdiv      
 zerocalc:LDA     0,i         ; reste = 0
          LDX     0,i         ; quotient = 0
-retdiv:  RET2                ; désempilons le diviseur #diviseu
+retdiv:  RET2                ; dÃ©sempilons le diviseur #diviseu
 
 ;
-; Fait la racine carrée
+; Fait la racine carrÃ©e
 ;
 racine:  STA     tempA,d
          STX     tempX,d   
          LDA     1,i         
          LDX     1,i         
          STA     resRacin,d  
-tantque: CPX     tempA,d     ; tempA est la valeur dont on veut calculer la racine carré
+tantque: CPX     tempA,d     ; tempA est la valeur dont on veut calculer la racine carrÃ©
          BRGT    finttq      
          ADDX    resRacin,d  
          ADDX    resRacin,d  
-         ADDX    1,i         ; x <- 2 * résultat + 1
+         ADDX    1,i         ; x <- 2 * rÃ©sultat + 1
          ADDA    1,i         
          STA     resRacin,d  
          BR      tantque     
 finttq:  SUBA    1,i         ; 1 fois en trop
-         STA     resRacin,d  ; racine carrée   
+         STA     resRacin,d  ; racine carrÃ©e   
          RET0      
 
 ;
@@ -203,7 +203,7 @@ ajoutBas:ADDA    base,d
 finCarre:RET0
 
 ;
-; Calcul l'écart-type
+; Calcul l'Ã©cart-type
 ;
 ecartLot:LDA     nbTirage,d  ; Pour avoir le nombre de tirage x2
          SUBA    1,i         ;
@@ -212,22 +212,22 @@ ecartLot:LDA     nbTirage,d  ; Pour avoir le nombre de tirage x2
          LDX     tempX,d     ;
 for4:    LDA     tabLots,x
          SUBA    lotMoy,d    ; Soustrait le lot du tableau avec la moyenne
-         CALL    carre       ; Fait le résultat au carré
+         CALL    carre       ; Fait le rÃ©sultat au carrÃ©
          BRV     invalEca
-         ADDA    ecart,d     ; Ajoute le résultat du carré à la somme pour calculer l'écart-type
+         ADDA    ecart,d     ; Ajoute le rÃ©sultat du carrÃ© Ã  la somme pour calculer l'Ã©cart-type
          STA     ecart,d     ;
          BRV     invalEca
          LDX     tempX,d
-         CPX     0,i         ; Regarde si tous les lots ont été mis à la deux et ajouté
+         CPX     0,i         ; Regarde si tous les lots ont Ã©tÃ© mis Ã  la deux et ajoutÃ©
          BREQ    divEcart    ; Si oui, nous allons faire la division
          SUBX    2,i
          STX     tempX,d
-         BR      for4        ; Si non, nous recommençons
+         BR      for4        ; Si non, nous recommenÃ§ons
 divEcart:LDA     ecart,d
          STA     dividend,d
          LDX     nbTirage,d
          STX     diviseur,d
-         CALL    DIVISE      ; Fait la division pour calculer l'écart-type
+         CALL    DIVISE      ; Fait la division pour calculer l'Ã©cart-type
          STX     quotient,d
          STA     reste,d
          LDA     quotient,d
@@ -238,7 +238,7 @@ divEcart:LDA     ecart,d
          RET0
 
 ;
-; Lorsqu'il y a un débordement dans le calcul de l'écart-type
+; Lorsqu'il y a un dÃ©bordement dans le calcul de l'Ã©cart-type
 ;
 invalEca:STRO    errEcart,d
          BR      continu6
@@ -246,13 +246,13 @@ invalEca:STRO    errEcart,d
 ;
 ; Trouve le lot maximum, le nombre de lot et fait la somme pour la moyenne
 ;
-verifFin:STA     tempA,d     ; Regarde si le programme est terminé
+verifFin:STA     tempA,d     ; Regarde si le programme est terminÃ©
          LDA     estFin,d    
          CPA     1,i         
-         BREQ    calcFin     ; Le programme est terminé
+         BREQ    calcFin     ; Le programme est terminÃ©
          LDA     1,i         
          STA     estFin,d    ; Indique que la prochaine fois le programme devra prendre fin
-lireTab: LDA     avCaract,d  ; Si le dernier caractère est un espace, nous l'annulons
+lireTab: LDA     avCaract,d  ; Si le dernier caractÃ¨re est un espace, nous l'annulons
          CPA     ESPACE,d       
          BREQ    annulFin    ; Est un espace
 continu: CPX     12,i        ; Regarde si il y a plus de 7 lots
@@ -265,23 +265,23 @@ continu: CPX     12,i        ; Regarde si il y a plus de 7 lots
          BREQ    setInva2    
 continu2:LDX     tempX,d     
          LDA     tabLots,x   
-         STA     lotMax,d    ; Indique le premier lot comme étant le lot maximum de départ
-for:     CALL    checkMax    ; Vérifie que le lot ne dépasse pas 100
-         CALL    verifMax    ; Vérifie si le lot présent est supérieur au lot maximum
-         CALL    addSomme    ; Ajoute un lot à la somme de lot
+         STA     lotMax,d    ; Indique le premier lot comme Ã©tant le lot maximum de dÃ©part
+for:     CALL    checkMax    ; VÃ©rifie que le lot ne dÃ©passe pas 100
+         CALL    verifMax    ; VÃ©rifie si le lot prÃ©sent est supÃ©rieur au lot maximum
+         CALL    addSomme    ; Ajoute un lot Ã  la somme de lot
          SUBX    2,i         ; Diminue le compteur du tableau
          CPX     0,i         
-         BRGE    for         ; Vérifie si le programme a lu tout le tableau
+         BRGE    for         ; VÃ©rifie si le programme a lu tout le tableau
          BR      calcLot     ; Lis la prochaine case du tableau
 
 ;
-; Annule les espaces en trop à la fin
+; Annule les espaces en trop Ã  la fin
 ;
 annulFin:SUBX 2,i            
          BR continu          
 
 ;
-; Vérifie que les lots ne dépassent pas 100
+; VÃ©rifie que les lots ne dÃ©passent pas 100
 ;
 checkMax:STA     tempA,d     
          LDA     tabLots,x   
@@ -290,7 +290,7 @@ checkMax:STA     tempA,d
          RET0
 
 ;
-; Vérifie si le lot présent est supérieur au lot maximum
+; VÃ©rifie si le lot prÃ©sent est supÃ©rieur au lot maximum
 ;
 verifMax:CPA     lotMax,d    
          BRGE    setMax      
@@ -304,7 +304,7 @@ setMax:  LDA     tabLots,x
          RET0
 
 ;
-; Ajoute un lot à la somme de lot
+; Ajoute un lot Ã  la somme de lot
 ;
 addSomme:LDA     tabLots,x   
          ADDA    somme,d     
@@ -324,11 +324,11 @@ moyenTot:LDA     sommeMoy,d  ; Prend la somme de tous les moyenne et la met dans
          ASLA    
          CPA     4,i         
          BRGE    callArro    ; Arrondit la moyenne
-         CALL    affiDeci    ; Affiche le résultat en décimal
+         CALL    affiDeci    ; Affiche le rÃ©sultat en dÃ©cimal
          RET0
 
 ;
-; Calcul la moyenne des lots d'une période
+; Calcul la moyenne des lots d'une pÃ©riode
 ;
 moyenLot:STA     tempA,d     
          STX     tempX,d     
@@ -347,7 +347,7 @@ continu3:LDA     quotient,d
          LDA     sommeMoy,d  ; Ajoute la moyenne de ce tirage au total des moyennes
          ADDA    lotMoy,d      
          STA     sommeMoy,d
-continu4:CALL    affiDeci    ; Affiche le résultat en décimal 
+continu4:CALL    affiDeci    ; Affiche le rÃ©sultat en dÃ©cimal 
          RET0
 
 ;
@@ -365,7 +365,7 @@ arrondir:LDA     quotient,d
          RET0
 
 ;
-; Affiche un chiffre en décimal
+; Affiche un chiffre en dÃ©cimal
 ;
 affiDeci:LDA     quotient,d  
          STA     dividend,d  
@@ -382,11 +382,11 @@ affiDeci:LDA     quotient,d
          RET0
 
 ;
-; Calcul les résultats par période
+; Calcul les rÃ©sultats par pÃ©riode
 ;
 calcLot: LDA     estInval,d  
          CPA     1,i         
-         BREQ    invalide    ; Si le flag estInval est égale à 1, le programme affiche invalide
+         BREQ    invalide    ; Si le flag estInval est Ã©gale Ã  1, le programme affiche invalide
 
          STRO    NBTIRAGE,d  
          DECO    nbTirage,d  ; Affiche le nombre de tirages
@@ -409,7 +409,7 @@ calcLot: LDA     estInval,d
 
          CHARO   ' ',i       
          STRO    ECART,d     
-         CALL    ecartLot    ; Calcul et affiche l'écart-type
+         CALL    ecartLot    ; Calcul et affiche l'Ã©cart-type
          
 continu6:CALL    viderTab    ; Vide le tableau de lot
          CHARO   '\n',i      
@@ -420,7 +420,7 @@ continu6:CALL    viderTab    ; Vide le tableau de lot
          LDA     nbPerTir,d  
          ADDA    1,i         
          STA     nbPerTir,d  
-         LDX     0,i         ; Réinitialise les variables à zéro
+         LDX     0,i         ; RÃ©initialise les variables Ã  zÃ©ro
          LDA     0,i         ;
          STA     lotMax,d    ;
          STA     lotMoy,d    ;
@@ -437,7 +437,7 @@ continu6:CALL    viderTab    ; Vide le tableau de lot
 ; Calcul les totaux
 ;
 calcFin: STRO    NBPERTIR,d  
-         DECO    nbPerTir,d  ; Affiche le nombre de période de tirage
+         DECO    nbPerTir,d  ; Affiche le nombre de pÃ©riode de tirage
          CHARO   '\n',i      
          STRO    NBTOTTIR,d  
          DECO    nbTotTir,d  ; Affiche le nombre total de tirage
@@ -448,7 +448,7 @@ calcFin: STRO    NBPERTIR,d
          BR      termine     
 
 ;
-; Dit au programme qu'ìl y a une entrée invalide
+; Dit au programme qu'Ã¬l y a une entrÃ©e invalide
 ;
 setInva1:LDA     1,i         ; Est invalide
          STA     estInval,d  
@@ -456,7 +456,7 @@ setInva1:LDA     1,i         ; Est invalide
          BR      boucle      
 
 ;
-; Dit au programme qu'ìl y a une entrée invalide
+; Dit au programme qu'Ã¬l y a une entrÃ©e invalide
 ;
 setInva2:LDA     1,i         ; Est invalide
          STA     estInval,d  
@@ -464,7 +464,7 @@ setInva2:LDA     1,i         ; Est invalide
          BR      continu2  
 
 ;
-; Lorsqu'il y a une entrée invalide
+; Lorsqu'il y a une entrÃ©e invalide
 ;
 invalide:STRO    erreur,d    ; Affiche le message d'erreur
 for2:    STA     tempA,d     
@@ -477,7 +477,7 @@ for2:    STA     tempA,d
          LDX     0,i         
          LDA     ESPACE,d       
          STA     avCaract,d  
-         LDA     0,i         ; Réinitialise les variables à zéro
+         LDA     0,i         ; RÃ©initialise les variables Ã  zÃ©ro
          STA     lotMax,d    ;
          STA     lotMoy,d    ;
          STA     somme,d     ;
@@ -500,10 +500,10 @@ viderTab:LDA     nbTirage,d
          STA     nbTirage,d
          LDX     nbTirage,d
 for3:    LDA     0,i         
-         STA     tabLots,x   ; Vide le tableau à la case suivante  
+         STA     tabLots,x   ; Vide le tableau Ã  la case suivante  
          SUBX    2,i         ; Augmente le compteur du tableau
          CPX     0,i         
-         BRGE    for3        ; Vérifie si le programme a lu tout le tableau
+         BRGE    for3        ; VÃ©rifie si le programme a lu tout le tableau
          RET0
 
 ;
@@ -513,7 +513,7 @@ termine: STRO    aurevoir,d
          STOP
 
 ;
-; Résultats par période
+; RÃ©sultats par pÃ©riode
 ;
 nbTirage:.BLOCK  2
 lotMax:  .BLOCK  2
@@ -558,21 +558,21 @@ ESPACE:  .WORD   -16
 ;
 ; Messages
 ;
-bienvenu:.ASCII  "Bienvenu dans le programme d'analyse de lots gagnants!\nLe programme va demander l'entré d'un maximum de 7 lots\nallant de 0.0 à 100.0. Ensuite, lorsque l'utilisateur appuie ENTER,\nle programme affiche le lot maximum, la moyenne des lots et l'écart-type.\nFinalement, lorsque l'utilisateur entre seulement ENTER,\nle programme cesse de demander des lots et affiche le nombre de périodes de tirages,\nle nombre total de tirages et la moyenne des moyennes des lots gagnants.\nLe programme affiche donc son message de fin et s'arrête.\n\n\x00"
+bienvenu:.ASCII  "Bienvenu dans le programme d'analyse de lots gagnants!\nLe programme va demander l'entrÃ© d'un maximum de 7 lots\nallant de 0.0 Ã  100.0. Ensuite, lorsque l'utilisateur appuie ENTER,\nle programme affiche le lot maximum, la moyenne des lots et l'Ã©cart-type.\nFinalement, lorsque l'utilisateur entre seulement ENTER,\nle programme cesse de demander des lots et affiche le nombre de pÃ©riodes de tirages,\nle nombre total de tirages et la moyenne des moyennes des lots gagnants.\nLe programme affiche donc son message de fin et s'arrÃªte.\n\n\x00"
 entrer:  .ASCII  "Entrez les montants des lots gagnants:\n\x00"
-aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
+aurevoir:.ASCII  "\nMerci, Ã  la prochaine!\x00"
 message: .ASCII  "\nLe code de validation est \x00"
 tiret:   .ASCII  "-------------------------------------------------------------------------\n\x00"
-erreur:  .ASCII  "Entrée invalide\n\x00"
+erreur:  .ASCII  "EntrÃ©e invalide\n\x00"
 errEcart:.ASCII  "nd\x00"
-deborde: .ASCII  "Erreur débordement\n\x00"
+deborde: .ASCII  "Erreur dÃ©bordement\n\x00"
 
 NBTIRAGE:.ASCII  "Nombre de tirages: \x00"
 LOTMAX:  .ASCII  "Lot maximum: \x00"
 LOTMOY:  .ASCII  "Moyenne des lots: \x00"
 ECART:   .ASCII  "Ecart: \x00"
 
-NBPERTIR:.ASCII  "Nombre de périodes de tirages: \x00"
+NBPERTIR:.ASCII  "Nombre de pÃ©riodes de tirages: \x00"
 NBTOTTIR:.ASCII  "Nombre total de tirages: \x00"
 MOYTOTAL:.ASCII  "Moyenne des moyennes des lots gagnants: \x00"
          .END                  
