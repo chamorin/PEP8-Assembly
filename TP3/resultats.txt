@@ -1,0 +1,37 @@
+Bienvenu dans le programme de chaine.
+
+Ce programme accepte une valeur d'entrée de l'utilisateur
+pouvant aller jusqu'à 26 caractères.
+Le programme affiche alors les chaînes,
+séparées par un ou plusieurs espaces, dans leur ordre croissant de valeur.
+Pour terminer le programme, l'utilisateur n'a
+qu'à entrer un ENTER seul.
+
+Entrez une ou plusieurs chaînes:
+n u l
+-> l -> n -> u
+Entrez une ou plusieurs chaînes:
+INF2171 inf2171
+-> INF2171 -> inf2171
+Entrez une ou plusieurs chaînes:
+  fin  fil  fini  
+-> fil -> fin -> fini
+Entrez une ou plusieurs chaînes:
+2019 H2019 h2019 h été19
+-> 2019 -> H2019 -> h -> h2019 -> été19
+Entrez une ou plusieurs chaînes:
+a e i o u y b c d e f g h
+-> a -> b -> c -> d -> e -> e -> f -> g -> h -> i -> o -> u -> y
+Entrez une ou plusieurs chaînes:
+a aa aaaa aa aaa
+-> a -> aa -> aa -> aaa -> aaaa
+Entrez une ou plusieurs chaînes:
+abcdefghijkl mnopqrstuvwxyz789
+-> Entrée invalide
+Entrez une ou plusieurs chaînes:
+a3 a2 a1 a6 a5 a4  
+-> a1 -> a2 -> a3 -> a4 -> a5 -> a6
+Entrez une ou plusieurs chaînes:
+ 
+-> 
+Merci, à la prochaine!
