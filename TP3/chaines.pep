@@ -1,8 +1,8 @@
 ; ************************************************************************************************
-;       Programme: Remise en ordre de chaînes de caractères.     version PEP813 sous Linux
+;       Programme: Remise en ordre de chaÃ®nes de caractÃ¨res.     version PEP813 sous Linux
 ;
-;        Suite à une demande à l'utilisateur,le programme affiche en ordre 
-;        ASCII croissant les chaînes des caractères entrées.
+;        Suite Ã  une demande Ã  l'utilisateur,le programme affiche en ordre 
+;        ASCII croissant les chaÃ®nes des caractÃ¨res entrÃ©es.
 ;
 ;       auteur:         Charles Morin
 ;       code permanent: MORC28019804
@@ -11,18 +11,18 @@
 ;       cours:          INF2171
 ; ************************************************************************************************
 ;
-;                            ; // Lit la liste (Ã  l'envers)
+;                            ; // Lit la liste (Ãƒ  l'envers)
 
          STRO    bienvenu,d
          STRO    message,d
          STRO    entrer,d     
 
 ;
-; Lecture initial d'un caractère
+; Lecture initial d'un caractÃ¨re
 ;
 begin:   LDA     mLength,i   
          CHARI   mVal,d
-         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         LDBYTEA mVal,d      ; Regarde si le caractÃ¨re entrÃ© est un ENTER
          CPA     ' ',i
          BREQ    begin
          CALL    new         ;   X = new Maillon(); #mVal #mNext   
@@ -31,47 +31,47 @@ begin:   LDA     mLength,i
          CHARO   ' ',i               
          LDA     0,i
          LDBYTEA mVal,d
-         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
-         CPA     '\n',i      ; Regarde si le caractère entré est un ENTER   
-         BREQ    end         ; Si le caractère est un ENTER seul le programme termine
-         STA     avCaract,d  ; Range le caractère entré dans avCaract
+         STBYTEA mVal,x      ; Range mVal dans le tableau Ã  la position X
+         CPA     '\n',i      ; Regarde si le caractÃ¨re entrÃ© est un ENTER   
+         BREQ    end         ; Si le caractÃ¨re est un ENTER seul le programme termine
+         STA     avCaract,d  ; Range le caractÃ¨re entrÃ© dans avCaract
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
          LDA     cpt,d       ; Ajoute 1 au compteur de chaine 
          ADDA    1,i         ;
          STA     cpt,d       ;
-         STA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
+         STA     nbCaract,d  ; Ajoute 1 au compteur de caractÃ¨re 
 
 ;
-; Lecture des caractères
+; Lecture des caractÃ¨res
 ;
 loop_in: LDA     avCaract,d  ; Regarde si le avCaract est un espace
          CPA     ' ',i       ;
          BREQ    avEspace    ;
          LDA     nbCaract,d
-         ADDA    1,i         ; Ajoute 1 au compteur de caractère 
+         ADDA    1,i         ; Ajoute 1 au compteur de caractÃ¨re 
          STA     nbCaract,d  ;
          LDA     mLength,i   
          CHARI   mVal,d
-         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         LDBYTEA mVal,d      ; Regarde si le caractÃ¨re entrÃ© est un ENTER
          CPA     '\n',i      ;
-         BREQ    setNbCh     ; Si oui va aux étape de trie
+         BREQ    setNbCh     ; Si oui va aux Ã©tape de trie
          ADDX    1,i
-         STBYTEA mVal,x      ; Range le BYTE un index plus loin que le précédent
-         STA     avCaract,d  ; Range le caractère entré dans avCaract
+         STBYTEA mVal,x      ; Range le BYTE un index plus loin que le prÃ©cÃ©dent
+         STA     avCaract,d  ; Range le caractÃ¨re entrÃ© dans avCaract
          BR      loop_in     ; } // fin for
 
 ;
-; Création de nouveaux maillons
+; CrÃ©ation de nouveaux maillons
 ;
-avEspace:LDA     nbCaract,d  ; Ajoute au compteur de caractère
+avEspace:LDA     nbCaract,d  ; Ajoute au compteur de caractÃ¨re
          ADDA    1,i         ;
          STA     nbCaract,d  ;
          CHARI   mVal,d
-         LDBYTEA mVal,d      ; Regarde si le caractère entré est un ENTER
+         LDBYTEA mVal,d      ; Regarde si le caractÃ¨re entrÃ© est un ENTER
          CPA     '\n',i      ;
-         BREQ    setNbCh     ; Si oui va aux étape de trie
+         BREQ    setNbCh     ; Si oui va aux Ã©tape de trie
          CPA     ' ',i       ; Si c'est un espace
          BREQ    addTo       ; Ajoute dans le maillon courrant 
          LDA     mLength,i   
@@ -81,8 +81,8 @@ avEspace:LDA     nbCaract,d  ; Ajoute au compteur de caractère
          STA     cpt,d       ;
          LDA     0,i
          LDBYTEA mVal,d
-         STA     avCaract,d  ; Range le caractère entré dans avCaract
-         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
+         STA     avCaract,d  ; Range le caractÃ¨re entrÃ© dans avCaract
+         STBYTEA mVal,x      ; Range mVal dans le tableau Ã  la position X
          LDA     head,d      
          STA     mNext,x     ;   X.next = head;
          STX     head,d      ;   head = X;
@@ -93,10 +93,10 @@ avEspace:LDA     nbCaract,d  ; Ajoute au compteur de caractère
 ;
 addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present  
          STA     mVal,x
-         STBYTEA mVal,x      ; Range mVal dans le tableau à la position X
-         STA     avCaract,d  ; Range le caractère entré dans avCaract
+         STBYTEA mVal,x      ; Range mVal dans le tableau Ã  la position X
+         STA     avCaract,d  ; Range le caractÃ¨re entrÃ© dans avCaract
          ADDX    1,i
-         LDA     nbCaract,d  ; Ajoute 1 au compteur de caractère 
+         LDA     nbCaract,d  ; Ajoute 1 au compteur de caractÃ¨re 
          ADDA    1,i         ;
          STA     nbCaract,d  ;
          BR      loop_in     ; } // fin for
@@ -107,8 +107,8 @@ addTo:   LDBYTEA mVal,d      ; Ajouter au maillon present
 setNbCh: LDA     cpt,d       ; Indique le nombre de chaine
          STA     nbChaine,d  ;
 findMin: LDA     nbCaract,d
-         CPA     28,i        ; Si il y a plus que 26 caractère
-         BRGE    setInval    ; L'entré est invalide
+         CPA     28,i        ; Si il y a plus que 26 caractÃ¨re
+         BRGE    setInval    ; L'entrÃ© est invalide
 continu: LDX     head,d      
          STX     minAddr,d   ; Le dernier maillon est le plus petit maillon initial 
          LDBYTEA mVal,x      ;
@@ -119,12 +119,12 @@ loop_out:CPX     0,i
          CPA     minVal,d
          BREQ    checkNex
          CPA     minVal,d
-         BRLE    setMin      ; Si le maillon évalué est plus petit que le maillon minimum
+         BRLE    setMin      ; Si le maillon Ã©valuÃ© est plus petit que le maillon minimum
          LDX     mNext,x     
          BR      loop_out    ; } // fin for
 
 ;
-; Si les deux maillons à comparer commence par la même valeur
+; Si les deux maillons Ã  comparer commence par la mÃªme valeur
 ;
 checkNex:STX     tempX,d 
          STA     tempA,d
@@ -189,15 +189,15 @@ out:     LDA     cpt,d
          SUBA    1,i
          STA     cpt,d
          LDA     isInval,d
-if:      CPA     1,i         ; Si l'entré est invalide
-         BREQ    and         ; évite l'affichage
+if:      CPA     1,i         ; Si l'entrÃ© est invalide
+         BREQ    and         ; Ã©vite l'affichage
          BR      else
-and:     LDA     cpt,d       ; Sinon regarde si le compteur est à zero
+and:     LDA     cpt,d       ; Sinon regarde si le compteur est Ã  zero
          CPA     0,i
          BREQ    invalide    ; Affiche le message d'erreur
 else:    LDA     isInval,d
-         CPA     1,i         ; Si l'entré est invalide
-         BREQ    invalMin    ; évite l'affichage
+         CPA     1,i         ; Si l'entrÃ© est invalide
+         BREQ    invalMin    ; Ã©vite l'affichage
 
          LDX     minAddr,d   ; Affiche la chaine complete   
 while:   LDBYTEA mVal,x      ;
@@ -214,9 +214,9 @@ continu3:LDX     minAddr,d
          LDBYTEA 0xFF,i      ; Remplace la chaine par 0xFF 
          STBYTEA mVal,x      ;
          LDA     cpt,d
-         CPA     0,i         ; Si c'est le dernier caractère n'affiche pas la flèche
+         CPA     0,i         ; Si c'est le dernier caractÃ¨re n'affiche pas la flÃ¨che
          BREQ    continu2
-         CHARO   ' ',i       ; Affiche la flèche
+         CHARO   ' ',i       ; Affiche la flÃ¨che
          CHARO   '-',i       ;
          CHARO   '>',i       ;
          CHARO   ' ',i       ;
@@ -227,7 +227,7 @@ continu2:LDA     cpt,d
          LDA     mLength,i 
          CHARO   '\n',i
          STRO    entrer,d
-         BR      begin       ; Retourne au début
+         BR      begin       ; Retourne au dÃ©but
 
 ;
 ; Remplace la chaine par 0xFF lorsque c'est invalide
@@ -238,7 +238,7 @@ invalMin:LDX     minAddr,d
          BR      continu
 
 ;
-; Indique que l'entrée est invalide
+; Indique que l'entrÃ©e est invalide
 ;
 setInval:LDA     1,i
          STA     isInval,d
@@ -257,7 +257,7 @@ invalide:LDX     minAddr,d
          BR      begin
 
 ;
-; Réinitialise toutes les variables
+; RÃ©initialise toutes les variables
 ;  
 reset:   LDA     0,i
          LDX     0,i
@@ -276,7 +276,7 @@ end:     STRO    aurevoir,d
 ;
 ; Variables
 ;
-head:    .BLOCK  2           ; #2h tête de liste (null (aka 0) si liste vide)
+head:    .BLOCK  2           ; #2h tÃªte de liste (null (aka 0) si liste vide)
 minVal:  .BLOCK  1           ; #1h 
 minVal2: .BLOCK  1           ; #1h
 minAddr: .BLOCK  2           ; #2h     
@@ -297,17 +297,17 @@ isEnd:   .BLOCK  2
 ; Messages
 ;
 bienvenu:.ASCII  "Bienvenu dans le programme de chaine.\n\n\x00"
-entrer:  .ASCII  "Entrez une ou plusieurs chaînes:\n\x00"
-aurevoir:.ASCII  "\nMerci, à la prochaine!\x00"
-message: .ASCII  "Ce programme accepte une valeur d'entrée de l'utilisateur\npouvant aller jusqu'à 26 caractères.\nLe programme affiche alors les chaînes,\nséparées par un ou plusieurs espaces, dans leur ordre croissant de valeur.\nPour terminer le programme, l'utilisateur n'a\nqu'à entrer un ENTER seul.\n\n\x00"
-erreur:  .ASCII  "Entrée invalide\n\x00"
+entrer:  .ASCII  "Entrez une ou plusieurs chaÃ®nes:\n\x00"
+aurevoir:.ASCII  "\nMerci, Ã  la prochaine!\x00"
+message: .ASCII  "Ce programme accepte une valeur d'entrÃ©e de l'utilisateur\npouvant aller jusqu'Ã  26 caractÃ¨res.\nLe programme affiche alors les chaÃ®nes,\nsÃ©parÃ©es par un ou plusieurs espaces, dans leur ordre croissant de valeur.\nPour terminer le programme, l'utilisateur n'a\nqu'Ã  entrer un ENTER seul.\n\n\x00"
+erreur:  .ASCII  "EntrÃ©e invalide\n\x00"
 
 ;
 ;******* Structure de liste d'entiers
-; Une liste est constituée d'une chaîne de maillons.
+; Une liste est constituÃ©e d'une chaÃ®ne de maillons.
 ; Chaque maillon contient une valeur et l'adresse du maillon suivant
-; La fin de la liste est marquée arbitrairement par l'adresse 0
-mVal:    .EQUATE 0          ; #1h26a valeur de l'élément dans le maillon
+; La fin de la liste est marquÃ©e arbitrairement par l'adresse 0
+mVal:    .EQUATE 0          ; #1h26a valeur de l'Ã©lÃ©ment dans le maillon
 mNext:   .EQUATE 26         ; #2h maillon suivant (null (aka 0) pour fin de liste)
 mLength: .EQUATE 28         ; taille d'un maillon en octets
 ;
